@@ -1,0 +1,1044 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\setlist{nosep}
+
+\title{Statistical Methods for Financial Data: Concise Summary}
+\author{Navid}
+\date{\today}
+
+\begin{document}
+
+\setlength{\parindent}{0pt}
+
+\maketitle
+\tableofcontents
+
+%-------------------
+\section*{Preface}
+This document provides a highly condensed summary of the main concepts in Statistical Methods for Financial Data, suitable for quick revision.
+
+%-------------------
+\section{R programming}
+
+
+\textbf{Vector}
+
+A sequence of elements of the same type (numeric, logical, or character). This is the fundamental 1D object in R.
+
+\vspace{0.5em}
+
+\textbf{Matrix}
+
+A rectangular table of numbers (2D). Useful for storing prices or returns of several assets, or portfolio weights for a universe of assets.
+
+\vspace{0.5em}
+
+\textbf{Array}
+
+An extension to higher dimensions (more than 2D). In finance, useful for storing portfolio weights over time across multiple assets.
+
+\vspace{0.5em}
+
+\textbf{Data Frame}
+
+A special 2D object where \textbf{each column is a vector} and can contain different data types (numeric, character, logical). Rows represent observations, columns represent variables. Ideal for financial datasets where observations (time periods) have different types of data (prices, names, flags).
+
+\vspace{0.5em}
+
+\textbf{List}
+
+Can contain any type of objects (including other lists), with each element optionally named. More flexible but less structured than data frames.
+
+\vspace{0.5em}
+
+\textbf{Key Distinction}
+
+Vectors, matrices, and arrays require all elements to be the \textit{same type}. Data frames and lists allow mixed types. For financial data, use data frames for structured datasets and matrices for numerical computations.
+
+\vspace{1em}
+
+\textbf{Returns}
+
+Periodic returns are computed as:
+\[
+R_{t+1} = \frac{P_{t+1} - P_t}{P_t} = \frac{P_{t+1}}{P_t} - 1
+\]
+
+\vspace{0.5em}
+
+\textbf{Arithmetic vs.\ Log Returns}
+
+\textit{Arithmetic returns}: Good for aggregating returns across multiple stocks (portfolios).
+
+\textit{Log returns}: Good for aggregating returns of a single stock over time. The sum of daily log returns equals the total log return. Log returns have domain $(-\infty, +\infty)$, which is compatible with most statistical distributions.
+
+\vspace{0.5em}
+
+\textbf{Code Efficiency and Good Practices in R}
+
+\begin{itemize}
+    \item \textbf{Do not use setwd()}: Avoid assuming a fixed folder structure; use the \texttt{here} package instead.
+    \item \textbf{Do not use rm(list = ls())}: This only deletes user objects, not packages or the R process. Restart R or use \texttt{Rscript myscript.R} for a clean session.
+    \item \textbf{Use the which() function} to find indices, but for min/max use the more efficient \texttt{which.min()} and \texttt{which.max()}.
+    \item \textbf{Use rowSums(), colSums(), rowMeans(), colMeans()}: These are more efficient than \texttt{apply()} for row/column operations.
+    \item \textbf{anyNA(x)} is usually more efficient than \texttt{any(is.na(x))} for missing value checks.
+    \item \textbf{Matrices are generally faster than data frames} for computation.
+    \item \textbf{Sparse matrices}: Efficient for data with mostly zero elements; only store locations of non-zero elements (use the \texttt{Matrix} package).
+    \item \textbf{Pre-allocate vectors}: Allocate the full size upfront, then fill in values. Never grow an object incrementally (applies to vectors, data frames, and lists).
+    \item \textbf{Vectorized operations}: Use functions that operate on entire vectors simultaneously rather than loops.
+\end{itemize}
+
+
+\textbf{Correlation Methods}
+
+\begin{itemize}
+    \item \textbf{Pearson correlation}: Measures linear relationship between two variables; sensitive to outliers.
+    \item \textbf{Spearman correlation}: Measures monotonic relationship using ranks; robust to outliers and non-linearities. Its value tells you if, as one variable increases, the other tends to increase or decrease
+    \item \textbf{Kendall correlation}: Measures ordinal association based on concordant and discordant pairs.
+    \item \textbf{Other types}: Distance correlation, partial correlation, etc. (used for non-linear or conditional relationships).
+\end{itemize}
+
+\vspace{1em}
+
+\textbf{Performance Ratios}
+
+\begin{itemize}
+    \item \textbf{Sharpe Ratio}: $\displaystyle \text{Sharpe} = \frac{\mathbb{E}[R] - r_f}{\sigma_R}$, where $\mathbb{E}[R]$ is the average (mean) return (typically annualized), $r_f$ is the risk-free rate, and $\sigma_R$ is the standard deviation of returns.
+    \item \textbf{Modified Sharpe Ratio}: $\displaystyle \text{Modified Sharpe} = \frac{\mathbb{E}[R] - r_f}{\text{Downside Deviation}}$, uses downside deviation (standard deviation of returns below a threshold, usually $r_f$).
+    \item \textbf{Sortino Ratio}: $\displaystyle \text{Sortino} = \frac{\mathbb{E}[R] - r_f}{\sigma_{\text{down}}}$, where $\sigma_{\text{down}}$ is the downside deviation with threshold set to zero (i.e., only negative returns). The Sortino ratio is a special case of the modified Sharpe ratio.
+    \end{itemize}
+
+\vspace{0.5em}
+
+\textit{Note:} $\mathbb{E}[R]$ is usually the arithmetic mean of daily, monthly, or annual returns, annualized for comparability. $r_f$ is the annual risk-free rate.
+
+
+\textbf{Minimum-Variance Portfolio and Efficient Frontier}
+\[
+w^* = \arg\min_w w'\Sigma w
+\]
+where $\Sigma$ is the covariance matrix and $w$ is the vector of portfolio weights.
+
+The \textbf{efficient frontier} is the set of portfolios with the lowest risk for a given level of expected return (or highest return for a given risk). The minimum-variance portfolio is on the efficient frontier and has the lowest risk overall.
+
+
+The efficient frontier can be displayed in the risk-return plane. Practitioners usually represent it in the risk-weights space.
+
+\textbf{Backtesting}
+
+Backtesting is the process of applying a strategy to historical data to see how it would have performed. Typically, the data is split into two parts: the first (in-sample) is used to build the portfolio, and the second (out-of-sample) is used to test it. or rolling windows can be used.
+
+\textbf{Benchmarking vs. Profiling}
+
+Benchmarking generally tests execution time of one function against another; profiling is about testing large chunks of code. Profiling allows us to detect possible bottlenecks in our R scripts, what is really slowing down our scripts.
+
+\textbf{Debugging: Four Steps}
+
+\begin{enumerate}
+  \item Realize that you have a bug!
+  \item Make it repeatable.
+  \item Figure out where it is.
+  \item Fix it and test it.
+\end{enumerate}
+
+\textbf{Reproducibility} is the extent to which consistent results are obtained when an experiment is repeated.
+
+\textbf{Replicability} is the ability of a scientific experiment or trial to be repeated to obtain a consistent result.
+
+%-------------------
+\section{Estimation methods}
+
+\subsection{Maximum likelihood estimation}
+
+\textbf{Definition}
+
+Maximum likelihood estimation (MLE) finds parameters $\hat{\theta}$ that maximize the likelihood of observing the sample. For Gaussian data, many well-known estimators fall into this category.
+
+\textbf{Key Properties of MLE}
+
+\begin{itemize}
+    \item \textbf{Consistency}: As sample size increases, $\hat{\theta}$ converges to true parameter $\theta$.
+    \item \textbf{Asymptotic normality}: $\hat{\theta} \sim N(\theta, \text{Var}(\hat{\theta}))$ (allows confidence intervals).
+    \item \textbf{Asymptotic efficiency}: $\text{Var}(\hat{\theta})$ is smaller than all other estimators.
+    \item \textbf{Asymptotically unbiased}: even with a small sample (like $n=10$), the average of your estimates across many repeated experiments would equal the true parameter value($E[\hat{\theta}] = \theta$).
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Mathematical Framework}
+
+Observations $x_1, \ldots, x_n$ from random vector $X$ with joint density $f(x_1, \ldots, x_n; \theta)$ depending on unknown parameter vector $\theta \in \Omega \subset \mathbb{R}^p$.
+
+Likelihood function: $L(\theta) = f(x_1, \ldots, x_n; \theta)$
+
+MLE: $\hat{\theta} = \arg\max_{\theta \in \Omega} L(\theta)$
+
+\vspace{0.5em}
+
+\textbf{Computational Trick}
+
+If data are \textbf{independent}, likelihood factorizes: $L(\theta) = \prod_{i=1}^n f_i(x_i; \theta)$. Taking logarithm simplifies:
+\[
+\hat{\theta} = \arg\max_{\theta \in \Omega} \sum_{i=1}^n \log f_i(x_i; \theta)
+\]
+
+\vspace{0.5em}
+
+\textbf{Gaussian Example}
+
+Model: $X_i \sim N(\mu, \sigma^2)$, where $\theta = (\mu, \sigma^2)$
+
+Probability density function:
+\[
+f(x; \mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
+\]
+
+For Gaussian data:
+\begin{itemize}
+    \item \textbf{MLE of location} ($\mu$): sample mean $\bar{x}$
+    \item \textbf{MLE of scale} ($\sigma^2$): sample variance $s^2 = \frac{1}{n}\sum (x_i - \bar{x})^2$ — biased
+    \item \textbf{Unbiased alternative}: Use $1/(n-1)$ normalization: $s^2_{\text{ub}} = \frac{1}{n-1}\sum (x_i - \bar{x})^2$
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Student-t Example (Numerical MLE)}
+
+Most MLEs cannot be derived analytically and require numerical optimization. Example: estimating parameters of Student-t distribution.
+
+Location-scale model: $f_t(x; \mu, \sigma, \nu) = \frac{1}{\sigma} f_t\left(\frac{x - \mu}{\sigma}; \nu\right)$
+
+where the standardized density is:
+\[
+f_t(z; \nu) = \frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\sqrt{\nu \pi} \Gamma\left(\frac{\nu}{2}\right)} \left(1 + \frac{z^2}{\nu}\right)^{-\frac{\nu+1}{2}}
+\]
+
+\textbf{Parameters}
+
+\begin{itemize}
+    \item \textbf{$\mu$}: location (mode of distribution)
+    \item \textbf{$\sigma$}: scale parameter
+    \item \textbf{$\nu$}: degrees of freedom (tail parameter) — heavier tails as $\nu$ decreases; $k$-th moment exists only if $\nu > k$
+\end{itemize}
+
+\textbf{Important}
+
+Variance of Student-t: $\text{Var} = \sigma^2 \cdot \frac{\nu}{\nu - 2}$ (not just $\sigma^2$)
+
+\vspace{0.5em}
+
+\textbf{Q-Q Plot (Goodness of Fit)}
+
+Visual tool to assess goodness of fit of univariate distribution. Plots sample quantiles vs theoretical quantiles:
+\[
+\left\{\left(\hat{F}^{-1}\left(\frac{i - \frac{1}{2}}{n}\right), x_{i:n}\right)\right\}_{i=1,\ldots,n}
+\]
+where $x_{i:n}$ is the $i$-th smallest observation and $\hat{F}$ is the cumulative density function of the fitted distribution.
+
+If points lie on the diagonal, the fitted distribution matches the data well.
+
+\vspace{0.5em}
+
+\textbf{Theorem 2.1 (Strong Consistency)}
+
+Under regularity conditions (open parameter space, injective parameter-to-distribution mapping, positive density, differentiability), the MLE $\hat{\theta}_n$ converges almost surely to the true parameter $\theta^*$.
+
+\vspace{0.5em}
+
+\textbf{Fisher Information Matrix}
+
+The Fisher information matrix $I(\theta)$ measures the curvature (sharpness) of the log-likelihood:
+\[
+I(\theta) = \mathbb{E}\left[\frac{\partial}{\partial \theta_i} \log f(X; \theta) \cdot \frac{\partial}{\partial \theta_j} \log f(X; \theta)\right]_{i,j=1,\ldots,p}
+= I(\theta) = -\mathbb{E}\left[\frac{\partial^2}{\partial \theta_i \partial \theta_j} \log f(X; \theta)\right]_{i,j=1,\ldots,p}
+\]
+
+\textbf{Intuition}: A sharp peak (high curvature) indicates high information—the data strongly constrains the parameter. A flat curve (low curvature) indicates low information—many parameter values fit equally well.
+
+For $p=1$: Fisher information number $I(\theta) = \mathbb{E}\left[\left(\frac{\partial}{\partial \theta} \log f(X; \theta)\right)^2\right]$
+
+\vspace{0.5em}
+
+\textbf{Theorem 2.2 (Cramér-Rao Inequality)}
+
+For any unbiased estimator $\hat{\theta}$ with $\mathbb{E}[\|\hat{\theta}\|^2] < \infty$:
+\[
+V(\hat{\theta}) - I^{-1}(\theta) \geq 0 \quad \text{(non-negative definite)}
+\]
+where $V(\hat{\theta})$ is the covariance matrix of $\hat{\theta}$ and $I(\theta)$ is the Fisher information matrix.
+
+\textbf{Key Points}
+
+\begin{itemize}
+    \item $I^{-1}(\theta)$ is the \textbf{Cramér-Rao lower bound} — the minimum achievable variance for any unbiased estimator
+    \item An estimator achieving this bound is \textbf{efficient}
+    \item The inequality essentially states: no unbiased estimator can have variance smaller than $I^{-1}(\theta)$
+    \item Intuition: Higher Fisher information $\Rightarrow$ lower lower bound $\Rightarrow$ more precise estimation possible
+\end{itemize}
+
+\textbf{MLE and Efficiency}
+
+The MLE is asymptotically normal and asymptotically efficient — it achieves the Cramér-Rao lower bound asymptotically. In many cases, it is also optimal in finite samples.
+
+\vspace{0.5em}
+
+\textbf{Theorem 2.3 (Asymptotic normality and asymptotic efficiency)}
+
+Suppose conditions i., ii., iii., iv., v., vi. of the consistency theorem hold, and:
+\begin{itemize}
+    \item $f(x; \theta)$ is twice differentiable in $\theta$ and $\frac{d^2}{d\theta^2} \log f(x; \theta)$ is continuous in $\theta$, uniformly in $x$
+    \item The Fisher information number $I(\theta)$ is strictly positive for all $\theta \in \Omega$
+    \item $\int f(x; \theta) dx$ is twice differentiable with respect to $\theta$ under the integral sign
+\end{itemize}
+
+Then for any sequence of solutions $\hat{\theta}_n$ of the likelihood equations converging almost surely to $\theta^*$:
+\[
+\sqrt{n}(\hat{\theta}_n - \theta^*) \xrightarrow{d} N(0, I^{-1}(\theta^*))
+\]
+
+The MLE estimator $\hat{\theta}_n$ is \textbf{asymptotically efficient} for $\theta^*$.
+
+\vspace{0.5em}
+
+\textbf{Observed Fisher Information Matrix}
+
+In practice, the Fisher information matrix $I(\theta)$ can be estimated by the \textbf{observed Fisher information matrix}:
+\[
+I^{\text{obs}}(\theta) = -\left[\frac{\partial^2}{\partial \theta_i \partial \theta_j} \log L(\theta)\right]_{i,j=1,\ldots,p}
+\]
+
+This differs from the theoretical Fisher information matrix in that there is no expectation taken. In many instances, $\log L(\theta)$ is the sum of independent terms, and by the law of large numbers, it will be close to the expectation. It is just sufficient to take the Hessian of $-\log L(\theta)$ and invert it. The latter approach makes it possible to immediately compute confidence bounds on the maximum likelihood estimates when the numerical solver gives the Hessian as output.
+
+\textbf{Key Point}: For numerical implementation, compute the negative Hessian of the log-likelihood at the MLE estimate, invert it, and use the result as the approximate covariance matrix $I^{-1}(\theta)$. This provides standard errors and confidence intervals for the MLE estimates.
+
+\vspace{0.5em}
+
+\textbf{Theorem 2.4 (Slutsky)}
+
+If we know the MLE $\hat{\theta}$ for a parameter $\theta$, but are instead interested in estimating a transformation $g(\theta)$, do we have to derive a different estimator for $g(\theta)$? No—if $\hat{\theta} \to \theta$ and $g$ has continuous partial derivatives, then $g(\hat{\theta})$ is a maximum likelihood estimator for $g(\theta)$. Suppose the conditions for asymptotic normality of the MLE hold; then an application of the delta method yields:
+\[
+\sqrt{n}(g(\hat{\theta}_n) - g(\theta^*)) \xrightarrow{d} N(0, J_g(\theta^*)^T I^{-1}(\theta^*) J_g(\theta^*))
+\]
+where $J_g$ is the Jacobian of $g$ with respect to $\theta$.
+
+\textbf{Key Points}
+
+\begin{itemize}
+    \item If $\hat{\theta}$ is the MLE for $\theta$, then $g(\hat{\theta})$ is automatically the MLE for $g(\theta)$ (the MLE is invariant under parameter transformations)
+    \item Other properties of an MLE $\hat{\theta}$ do not necessarily hold for $g(\hat{\theta})$. For example, if $\hat{\theta}$ is unbiased for $\theta$, then $g(\hat{\theta})$ is generally not unbiased for $g(\theta)$ (think about Jensen's inequality)
+\end{itemize}
+
+\subsection{Method of moments}
+
+\textbf{Principle}
+
+A simple alternative to maximum likelihood is the method of moments. Suppose the first $k$ moments of the random variable $X$ can be written as functions of the $k$ unknown parameters:
+\[
+\begin{cases}
+\mu_1 = g_1(\theta_1, \ldots, \theta_k) \\
+\mu_2 = g_2(\theta_1, \ldots, \theta_k) \\
+\vdots \\
+\mu_k = g_k(\theta_1, \ldots, \theta_k)
+\end{cases}
+\]
+where $\mu_j = \mathbb{E}[X^j]$ denotes the $j$-th population moment. Assume the functions $g_1, \ldots, g_k$ are invertible, so the system of $k$ equations in $k$ unknowns has a unique solution:
+\[
+\begin{cases}
+\theta_1 = h_1(\mu_1, \ldots, \mu_k) \\
+\theta_2 = h_2(\mu_1, \ldots, \mu_k) \\
+\vdots \\
+\theta_k = h_k(\mu_1, \ldots, \mu_k)
+\end{cases}
+\]
+
+\textbf{Method of Moments Estimator}
+
+The method of moments estimator is based on plugging in the first $k$ sample moments:
+\[
+m_j = \frac{1}{n} \sum_{i=1}^{n} X_i^j, \quad j = 1, \ldots, k
+\]
+
+The solution $\hat{\theta}$ is obtained by substituting population moments with sample moments:
+\[
+\begin{cases}
+\hat{\theta}_1 = h_1(m_1, \ldots, m_k) \\
+\hat{\theta}_2 = h_2(m_1, \ldots, m_k) \\
+\vdots \\
+\hat{\theta}_k = h_k(m_1, \ldots, m_k)
+\end{cases}
+\]
+Thus $\hat{\theta} = h(m_1, \ldots, m_k)$ is a function of the first $k$ sample moments.
+
+note that the system of equations is rarely invertible analytically and usually requires numerical techniques to solve.
+
+\vspace{0.5em}
+
+\textbf{Theorem 2.5 (Strong consistency and asymptotic normality)}
+
+If the system of equations has a unique solution $\theta = h(m_1, \ldots, m_k)$, with $h$ a differentiable function, then the method of moments estimator is strongly consistent:
+\[
+\hat{\theta}_n \xrightarrow{a.s.} \theta^* \quad \text{as } n \to \infty
+\]
+
+Moreover, $\sqrt{n}(\hat{\theta}_n - \theta^*)$ converges to a Gaussian distribution with mean zero.
+
+\textbf{Asymptotic Covariance}
+
+The asymptotic covariance matrix of the method of moments estimator depends upon the distribution of the sample moments $m_1, \ldots, m_k$ and the function $h$. Not only is the covariance matrix usually hard to derive in practice, it might be impossible to estimate reliably even if an analytic form is known. In order to obtain a confidence interval, it is often more convenient to rely on resampling methods (Chapter 5).
+
+\vspace{0.5em}
+
+\textbf{Generalized Method of Moments}
+
+When we have more moments than parameters (overidentified system), the standard method of moments no longer applies. In this case, we resort to the \textbf{generalized method of moments}. We construct a quadratic objective function from the various moments, weighted by a weight matrix $W$. Then, we minimize the objective function using numerical procedures.
+
+\vspace{0.5em}
+
+\textbf{Simulated Method of Moments}
+
+In cases where the theoretical moments are not available in closed form, we may resort to simulation. This approach, called \textbf{simulated method of moments}, estimates the population moments via Monte Carlo simulation from the model.
+
+\subsection{Bayesian estimation}
+
+\textbf{Frequentist Approach:}
+\begin{itemize}
+    \item Methods: MLE, method of moments, etc.
+    \item Assumption: There exists a latent model with unknown but fixed true parameters $\theta^*$
+    \item Limitation: Does not incorporate domain knowledge or prior beliefs about the quantities of interest
+\end{itemize}
+
+\textbf{Bayesian Approach:}
+\begin{itemize}
+    \item Starts with a \textbf{prior distribution} for the parameters of interest
+    \item Updates this prior belief according to the observed sample via Bayes's theorem
+    \item Produces a \textbf{posterior distribution}, combining prior knowledge and data evidence
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Bayes's Theorem}
+
+Bayes's theorem follows from the definition of conditional probability and the law of total probability. For events $A$ and $B$:
+\[
+\mathbb{P}[A \mid B] = \frac{\mathbb{P}[B \mid A] \mathbb{P}[A]}{\mathbb{P}[B]} = \frac{\mathbb{P}[B \mid A] \mathbb{P}[A]}{\mathbb{P}[B \mid A] \mathbb{P}[A] + \mathbb{P}[B \mid A^c] \mathbb{P}[A^c]}
+\]
+
+Probabilities before observing data are called the \textbf{prior probabilities} and the probabilities conditional on observed data are called the \textbf{posterior probabilities}.
+
+\vspace{0.5em}
+
+\textbf{Prior and Posterior Distributions}
+
+Instead of assuming the parameter $\theta$ has a fixed value, we now assume it has a continuous distribution. The \textbf{prior distribution} $\pi(\theta)$ expresses our beliefs about the distribution of $\theta$ prior to observing any data. The density function of the data is defined as $f(x \mid \theta)$, i.e., the likelihood conditional on $\theta$. The joint density of $X$ and $\theta$ is given by:
+\[
+f(x, \theta) = \pi(\theta) f(x \mid \theta)
+\]
+
+The marginal density of $X$ is obtained by integrating over $\theta$:
+\[
+f(x) = \int \pi(\theta) f(x \mid \theta) d\theta
+\]
+
+Bayes's theorem states that the \textbf{posterior distribution} of the parameter $\theta$, after having observed $X$, equals:
+\[
+\pi(\theta \mid x) = \frac{\pi(\theta) f(x \mid \theta)}{f(x)} = \frac{\pi(\theta) f(x \mid \theta)}{\int \pi(\theta) f(x \mid \theta) d\theta}
+\]
+
+The posterior distribution combines the prior beliefs $\pi(\theta)$ and the likelihood of the data $f(x \mid \theta)$ to produce updated beliefs about the parameters given the observed evidence.
+
+\vspace{0.5em}
+
+\textbf{Bayes Estimators and Posterior Inference}
+
+The posterior distribution provides a way to update prior beliefs about $\theta$ by incorporating information observed in $X$. Based on the posterior, we extract a point estimate. The most common Bayes estimators are:
+
+\begin{itemize}
+    \item \textbf{Maximum a Posteriori (MAP) estimator}: The mode of the posterior density, i.e., $\hat{\theta}_{\text{MAP}} = \arg\max_{\theta} \pi(\theta \mid x)$
+    \item \textbf{Posterior mean}: The mean of the posterior density, given by:
+    \[
+    \mathbb{E}[\theta \mid x] = \int \theta \pi(\theta \mid x) d\theta = \frac{\int \theta \pi(\theta) f(x \mid \theta) d\theta}{\int \pi(\theta) f(x \mid \theta) d\theta}
+    \]
+    This is called the \textbf{posterior expectation}.
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Posterior Intervals (also called a credible interval)}
+
+Posterior intervals arise naturally by considering appropriate quantiles of the posterior distribution. For example, a 95\% credible interval is a range that contains 95\% of the posterior probability mass for $\theta$.
+
+\vspace{0.5em}
+
+\textbf{Posterior Intervals vs. Confidence Intervals}
+
+\textbf{Key Difference:} There is an important distinction in interpretation between the posterior interval (Bayesian) and the confidence interval (frequentist, used with MLE):
+
+\begin{itemize}
+    \item \textbf{Confidence interval (frequentist)}: The parameter is fixed and unknown; the interval is random (depends on the random sample). The confidence interval is interpreted as: if we repeated the sampling procedure many times, approximately a pre-determined coverage probability (e.g., 95\%) of the intervals would contain the true fixed parameter value.
+    
+    \item \textbf{Posterior interval (Bayesian)}: The sample is fixed and observed; the parameter is random. The posterior interval is interpreted as: conditional on the observed data, we obtain a posterior interval for the realization of the random parameter, representing our updated beliefs about where $\theta$ lies.
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Beta Distribution as Prior}
+
+A popular choice as a prior distribution in Bayesian statistics is the \textbf{Beta distribution}. For a parameter $p \in [0, 1]$ (e.g., probability of success), the Beta distribution with shape parameters $\alpha, \beta > 0$ has density:
+\[
+f(p) = \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)} p^{\alpha-1} (1-p)^{\beta-1}, \quad p \in [0, 1]
+\]
+
+\textbf{Note}: $\Gamma$ denotes the \textbf{Gamma function}, a generalization of the factorial: $\Gamma(n) = (n-1)!$ for positive integers. More generally, $\Gamma(x) = \int_0^{\infty} t^{x-1} e^{-t} dt$. The ratio $\frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}$ is a normalizing constant (the Beta function) that ensures the density integrates to 1.
+
+\vspace{0.5em}
+
+The Beta distribution is particularly useful as a prior because:
+\begin{itemize}
+    \item It is a \textbf{conjugate prior} for the binomial likelihood, meaning the posterior distribution is also Beta
+    \item Flexibility: Different values of $\alpha$ and $\beta$ produce various shapes (uniform, skewed, concentrated)
+    \item The hyperparameters $\alpha$ and $\beta$ have intuitive interpretations related to prior pseudo-counts of successes and failures
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Conjugate Priors}
+
+A family of distributions is called a conjugate prior family for a statistical model if the posterior is in the same family as the prior (like Beta distribution and Wishart distribution).
+
+\subsection{Heuristic optimization methods}
+
+\textbf{Definition}
+
+We define heuristic optimization as a set of techniques that:
+\begin{itemize}
+    \item[i)] Give a good stochastic approximation of the true optimum
+    \item[ii)] Are robust to changes in the optimization settings
+    \item[iii)] Are easy to implement
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Single-Solution vs. Multiple-Solution Methods}
+
+\textbf{Single-solution methods} start from an initial (educated) guess for the solution and try to improve by changing the parameter values in a random fashion to lower the objective function. Examples include gradient descent with random restarts and simulated annealing.
+
+\textbf{Multiple-solution (population-based) methods} start with many initial guesses and in each step keep the best ones and combine them into, hopefully, parameter values yielding an improvement in the objective function. Examples include genetic algorithms, particle swarm optimization, and differential evolution.
+
+
+\subsubsection{Single-solution methods (trajectory-based methods)}
+
+\textbf{Example: Maximum Diversification Portfolio (Single-Solution Method)}
+
+A practical application of single-solution methods is the maximum diversification portfolio, introduced by Choueifaty and Coignard (2008). It maximizes the objective function:
+\[
+\text{DR}(w) = \frac{w' \sqrt{\text{diag}(\Sigma)}}{\sqrt{w' \Sigma w}} = \frac{\text{``combination of the risks''}}{\text{``risk of the combination''}}
+\]
+
+The diversification ratio (DR) is defined as the ratio of the weighted average volatility of individual securities divided by the volatility of the overall portfolio. Key properties:
+
+\begin{itemize}
+    \item DR is always $\geq 1$ (equality when all weight in a single asset)
+    \item DR can be interpreted as the square root of the number of independent risk sources; thus $\text{DR}^2$ is the \textbf{effective number of independent sources of risk} in the portfolio
+    \item A high DR indicates good diversification across many independent risk sources
+    \item \textbf{Important}: Holding many assets does not increase DR unless they expose to diverse, uncorrelated risk sources. Low correlation is key.
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Neighbour Function and Multiple Starting Points}
+
+Single-solution optimization methods all depend on the so-called \textbf{neighbour function}. This function generates a new solution to try, given an old solution.
+
+Since single-solution methods depend on a random starting point, it is best to run them multiple times from different starting points to increase the probability of arriving at a good solution. This strategy helps escape local optima and improves the likelihood of finding a global or near-global optimum.
+
+\vspace{0.5em}
+
+\textbf{Local Search}
+
+The most straightforward way to utilize the neighbour function is to randomly include or exclude an asset and check if it increases the diversification ratio. If it does, we start looking for a neighbour of our new portfolio; otherwise, we generate a different neighbour.
+
+This procedure is called \textbf{local search (LS)}. A key property of LS is that it \textbf{guarantees in each step the diversification ratio does not decrease}. Since the ratio is bounded above, the algorithm converges to a local optimum. Therefore, this algorithm converges reliably to a local minimum (or local maximum, depending on problem formulation), though it may not find the global optimum.
+
+\vspace{0.5em}
+
+\textbf{Threshold Accepting}
+
+It is one way to avoid getting trapped in local minima. Unlike local search which only accepts strictly better solutions, TA \textbf{accepts deteriorations provided they do not exceed a threshold} $\tau_t$. 
+
+Crucially, \textbf{the thresholds decrease over time}, and hence the algorithm eventually converges to a local search behavior, ensuring eventual convergence to a local optimum.
+
+\vspace{0.5em}
+
+\textbf{Simulated Annealing}
+
+Simulated annealing \textbf{starts with a random solution $x^c$ and creates a new solution $x^n$ by using a neighbour function that adds a small perturbation}. If the new solution is better, it is accepted. \textbf{In case $x^n$ is worse, simulated annealing does not reject it straight away, but applies a stochastic acceptance criterion}.
+
+\textbf{This acceptance probability is a decreasing function of both the order of magnitude of the deterioration and the time the algorithm has already run}. Thus, simulated annealing introduces a \textbf{soft threshold for accepting worse solutions, whereas threshold accepting has a hard threshold}.
+
+\subsubsection{Population-based methods}
+
+Population-based methods are often better at exploration. Main drawback is that they are usually more computationally expensive and have higher memory requirements.
+
+\vspace{0.5em}
+
+\textbf{Differential Evolution (DE)}
+
+Let $N_P$ denote the population size of parameter vectors $x \in \mathbb{R}^d$ (dimension $d$). Initiate with $N_P$ guesses using random or user-provided values.
+
+Each generation uses \textbf{differential mutation}: \textbf{create mutant $v_i$ from three randomly selected members $x_{i_1}, x_{i_2}, x_{i_3}$}:
+\[
+v_i = x_{i_1} + c \cdot (x_{i_2} - x_{i_3})
+\]
+where $c < 1$ is the scale factor.
+
+\textbf{Mutation continues for $d$ steps with crossover probability $C_R \in [0,1]$}, which \textbf{controls the fraction of parameters copied from the mutant}. Correct bounds violations. \textbf{Replace previous vector if trial vector has equal or lower objective value; otherwise keep the previous vector}.
+
+\vspace{0.5em}
+
+\textbf{Intuition}: As the population converges toward the global optimum, the distribution shrinks, generating smaller difference vectors $(x_{i_2} - x_{i_3})$, which refines the search around the optimum.
+
+\vspace{0.5em}
+
+\textbf{Value-at-Risk (VaR)}
+
+For a random variable $X$, the \textbf{Value-at-Risk (VaR) at level $\alpha$} is defined as the \textbf{$\alpha$-lower quantile of the distribution of $X$}:
+\[
+\text{VaR}_X(\alpha) = F_X^{-1}(1 - \alpha)
+\]
+where $F_X$ is the cumulative distribution function of $X$. For example, the 95\% VaR equals the quantile $F^{-1}(0.05)$.
+
+\textbf{Conditional Value-at-Risk (CVaR)}
+
+The \textbf{Conditional VaR (CVaR) at level $\alpha$} is the \textbf{weighted average of all VaR-values with a loss greater than the VaR at level $\alpha$}:
+\[
+\text{CVaR}_X(\alpha) = \mathbb{E}[X \mid X < \text{VaR}_X(\alpha)] = \frac{\int_{-\infty}^{1-\alpha} u \, dF(u)}{1 - \alpha} = \int_{\alpha}^{1} \text{VaR}_X(u) \, du
+\]
+
+The CVaR is also referred to as the \textbf{Expected Shortfall}.
+
+\vspace{0.5em}
+
+\textbf{Properties}
+
+VaR satisfies monotonicity, homogeneity, and translational invariance. CVaR also satisfies the sub-additivity property and is hence a \textbf{coherent risk measure}. VaR does not satisfy the sub-additivity property.
+
+
+%-------------------
+\section{Multivariate modelling}
+
+\subsection{Multivariate distributions}
+
+\textbf{Multivariate Gaussian}
+
+In the \textbf{$d$-dimensional Gaussian case, the density is}:
+\[
+f(x) = \frac{1}{(2\pi)^{d/2} |\Sigma|^{1/2}} \exp\left(-\frac{1}{2}(x - \mu)' \Sigma^{-1} (x - \mu)\right)
+\]
+Parameters: mean vector $\mu$ and covariance matrix $\Sigma$.
+
+\vspace{0.5em}
+
+\textbf{Drawbacks of Multivariate Gaussian}
+
+\textbf{Strong drawbacks}: lack of dependence in the tails, lack of skewness, and light tails.
+
+\vspace{0.5em}
+
+\textbf{Multivariate Student-t Distribution}
+
+To address light tails, use a multivariate Student-t distribution. The univariate Student-t is $X = Z/\sqrt{V/\nu}$ where $Z \sim N(0,1)$ and $V \sim \chi^2(\nu)$, with density:
+\[
+f(x) = \frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\sqrt{\nu\pi}\Gamma\left(\frac{\nu}{2}\right)}\left(1 + \frac{x^2}{\nu}\right)^{-\frac{\nu+1}{2}}
+\]
+
+This variable has \textbf{mean zero} and \textbf{variance $\nu/(\nu-2)$, if $\nu > 2$}.
+
+\textbf{Key constraints}: variance exists if $\nu > 2$. Skewness is zero if $\nu > 3$ and otherwise does not exist. For kurtosis to make sense, $\nu > 4$.
+
+\vspace{0.5em}
+
+\textbf{Multivariate Student-t Generalization}
+
+\textbf{A multivariate generalization with mean $\mu$ and scatter matrix $A$ has density}:
+\[
+f(x) = \frac{\Gamma\left(\frac{\nu+d}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right)(\nu\pi)^{d/2}|A|^{1/2}}\left(1 + \frac{1}{\nu}(x-\mu)'A^{-1}(x-\mu)\right)^{-\frac{\nu+d}{2}}
+\]
+
+\textbf{The scatter matrix $A$ is not equal to the covariance matrix. It holds that $\Sigma = A\nu/(\nu-2)$}.
+
+\textbf{Important}: \textbf{When $A = I$, the different components are not independent}, in contrast with independent components having Student-t marginals.
+
+\subsubsection{Elliptical distributions}
+
+The \textbf{multivariate Gaussian and multivariate Student-t} are instances of \textbf{elliptical distributions}, distributed with \textbf{location vector $\mu$ and scatter matrix $A$}:
+\[
+f(x) = |A|^{-1/2} f^{(d)}\left((x - \mu)' A^{-1} (x - \mu)\right)
+\]
+
+for \textbf{density generating function $f^{(d)}(z), z \geq 0$} such that:
+\[
+\int_0^{\infty} z^{d/2-1} f^{(d)}(z) dz = \frac{\Gamma(d/2)}{\pi^{d/2}}
+\]
+
+so that \textbf{$f^{(d)}$ is a spherical $d$-dimensional density}. Elliptical distribution: $\text{Ell}(\mu, A, f^{(d)})$.
+
+For \textbf{multivariate Gaussian}:
+\[
+f^{(d)}(x) = \frac{e^{-x/2}}{(2\pi)^{d/2}}
+\]
+
+\vspace{0.5em}
+
+\textbf{Properties of Elliptical Distributions}
+
+If $X \sim \text{Ell}(\mu, A, f^{(d)})$, \textbf{then for any matrix $B$ of rank $m \leq d$ and vector $b$: $BX + b \sim \text{Ell}(B\mu + b, BAB', f^{(d)})$}. Thus, \textbf{if asset returns follow elliptical distribution, portfolio returns are univariate elliptically distributed}.
+
+\textbf{If $X$ is partitioned as} $X = \begin{pmatrix} X_1 \\ X_2 \end{pmatrix} \sim \text{Ell}\left(\begin{pmatrix} \mu_1 \\ \mu_2 \end{pmatrix}, \begin{pmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \end{pmatrix}, f^{(d)}\right)$, \textbf{then $X_i$ is also elliptically distributed: $X_i \sim \text{Ell}(\mu_i, A_{ii}, f^{(d_i)})$}.
+
+\vspace{0.5em}
+
+\textbf{Akaike Information Criterion (AIC) for goodness of fit}
+
+\[
+\text{AIC} = 2 \times (\text{negative log-likelihood}) + 2 \times (\text{number of parameters})
+\]
+
+Penalizes overparametrized models. Lower AIC is better.
+
+
+\vspace{0.5em}
+
+\subsubsection{Skew-elliptical distributions}
+
+\textbf{Skewed Gaussian}
+
+\[
+g(z) = 2\varphi(z)\Phi(\lambda z)
+\]
+
+where $\varphi(z)$ is the standard Gaussian \textbf{pdf} and $\Phi(z)$ is the standard Gaussian \textbf{cdf}.
+
+\begin{itemize}
+    \item $\lambda = 0$: $g(z) = \varphi(z)$ (standard Gaussian)
+    \item $\lambda \to \infty$: Gaussian truncated from below at zero
+    \item $\lambda > 0$: positive skew
+    \item $\lambda < 0$: negative skew
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Multivariate Skewed Elliptical Distribution}
+
+Construction: Condition on latent skew-governing variable $U_0$. Joint distribution:
+\[
+U^* = \begin{pmatrix} U_0 \\ U \end{pmatrix} \sim \text{Ell}(\mu^*, A^*, f^{(d+1)})
+\]
+
+with $\mu^* = \begin{pmatrix} 0 \\ \mu \end{pmatrix}$ and $A^* = \begin{pmatrix} 1 & \delta' \\ \delta & A \end{pmatrix}$
+
+Setting $Y = U | U_0 > 0$ yields: $Y \sim \text{SEll}(\mu, A, \delta, f^{(d)})$ (location $\mu$, scale $A$, asymmetry $\delta$).
+
+\textbf{PDF}:
+\[
+g_Y(y) = 2 g_{\cdot d}(y) \Phi(\lambda'(y - \mu))
+\]
+
+where $g_{\cdot d}$ is the pdf of $\text{Ell}(\mu, A, f^{(d)})$ and $\lambda' = \frac{\delta' A^{-1}}{\sqrt{1 - \delta' A^{-1}\delta}}$.
+
+\textbf{Special Cases}
+
+\begin{itemize}
+    \item \textbf{Gaussian}: $g(z) = 2\varphi_d(A^{-1}(z-\mu))\Phi(\lambda'D^{-1/2}(z-\mu))$ where $D = \text{diag}(\sigma_1, \ldots, \sigma_d)$
+    \item \textbf{Student-t}: skewed Student-t extends to multivariate case with similar structure
+\end{itemize}
+
+\subsection{Higher order comoments}
+
+For random vector $X$ with mean $\mu$ and finite fourth-order moments:
+
+\textbf{Covariance, coskewness, and cokurtosis matrices}:
+\[
+\Sigma = \mathbb{E}[(X - \mu)(X - \mu)']
+\]
+\[
+\Phi = \mathbb{E}[(X - \mu)(X - \mu)' \otimes (X - \mu)']
+\]
+\[
+\Psi = \mathbb{E}[(X - \mu)(X - \mu)' \otimes (X - \mu)' \otimes (X - \mu)']
+\]
+
+where $\otimes$ denotes the \textbf{Kronecker product}.
+
+\vspace{0.5em}
+
+\textbf{Coskewness matrix} $\Phi$ (third-order central moments):
+\[
+\phi_{ijk} = \mathbb{E}[(X_i - \mu_i)(X_j - \mu_j)(X_k - \mu_k)], \quad i,j,k = 1,\ldots,d
+\]
+
+Written as: $\Phi = [\Phi_1 | \cdots | \Phi_d]$ where each $\Phi_k$ is a $d \times d$ matrix with elements $\phi_{ijk}$.
+
+\textbf{Supersymmetry}: $\phi_{ijk}$ is equal for every permutation of indices $i, j, k$. Dimension: $d \times d^2$, but only $\frac{d(d+1)(d+2)}{6}$ unique elements.
+
+\vspace{0.5em}
+
+\textbf{Cokurtosis matrix} $\Psi$ (fourth-order central moments): Only $\frac{d(d+1)(d+2)(d+3)}{24}$ unique elements.
+
+\vspace{0.5em}
+
+\textbf{Portfolio moments from comoments}
+
+For portfolio $w'X$:
+\[
+\mu_{w'X} = w'\mu
+\]
+\[
+\sigma^2_{w'X} = w'\Sigma w
+\]
+\[
+\phi_{w'X} = w'\Phi(w \otimes w)
+\]
+\[
+\psi_{w'X} = w'\Psi(w \otimes w \otimes w)
+\]
+
+Applications: utility expansion, Cornish-Fisher VaR, and CVaR.
+
+\vspace{0.5em}
+
+\textbf{Sample estimation}
+
+\[
+\hat{\Sigma}_{ij} = \frac{1}{n}\sum_{m=1}^n (x_{mi} - \bar{x}_i)(x_{mj} - \bar{x}_j)
+\]
+\[
+\hat{\phi}_{ijk} = \frac{1}{n}\sum_{m=1}^n (x_{mi} - \bar{x}_i)(x_{mj} - \bar{x}_j)(x_{mk} - \bar{x}_k)
+\]
+\[
+\hat{\psi}_{ijkl} = \frac{1}{n}\sum_{m=1}^n (x_{mi} - \bar{x}_i)(x_{mj} - \bar{x}_j)(x_{mk} - \bar{x}_k)(x_{ml} - \bar{x}_l)
+\]
+
+where $\bar{x} = \frac{1}{n}\sum_{m=1}^n x_m$. Results gathered in $\hat{\Sigma}$, $\hat{\Phi}$, and $\hat{\Psi}$.
+
+\vspace{0.5em}
+
+\textbf{Direction of preference for higher moments}
+
+Preference: high expected return, lower variance, higher skewness, lower kurtosis. Scott and Horvath (1980) derive preference for higher third central moment and lower fourth central moment.
+
+\textbf{Expected utility approximation (CRRA with risk aversion $\gamma$)}:
+\[
+w'\mu - \frac{\gamma}{2}w'\Sigma w + \frac{\gamma(\gamma+1)}{6}w'\Phi(w \otimes w) - \frac{\gamma(\gamma+1)(\gamma+2)}{24}w'\Psi(w \otimes w \otimes w)
+\]
+
+\subsection{Copulas}
+
+\textbf{Motivation}
+
+Limitations of traditional multivariate distributions:
+
+\begin{itemize}
+    \item Lack of flexible parametric distributions where marginals can have different distributions
+    \item Parameters of association often appear in marginals, making interpretation unclear
+\end{itemize}
+
+\textbf{Solution: Copulas}
+
+\textbf{Separate marginal distributions from multivariate dependence}. Copulas provide a structured way to construct multivariate distributions that:
+
+\begin{itemize}
+    \item Allow arbitrary marginal distributions
+    \item Model dependence structure independently from marginals
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Probability Integral Transform (PIT) and Inverse Transform}
+
+PIT maps observed data to standard uniform distribution via the cumulative distribution function (CDF). Inverse transform generates random samples from any distribution given uniform samples and the quantile function.
+
+\vspace{0.5em}
+
+\textbf{Theorem 3.1 (PIT and Inverse PIT)}
+
+For continuous random variable $X$ with CDF $F_X$:
+\[
+Y = F_X(X) \sim U[0,1]
+\]
+
+For uniform $U \sim U[0,1]$ and CDF $F_X$:
+\[
+X = F_X^{-1}(U)
+\]
+
+\vspace{0.5em}
+
+\textbf{Definition 3.1 (Bivariate copula)}
+
+A bivariate copula is a function $C : [0,1] \times [0,1] \to [0,1]$ with properties:
+
+\begin{enumerate}
+    \item $C(u,v)$ is increasing in $u$ and $v$
+    \item $C(0,v) = C(u,0) = 0$, $C(1,v) = v$, $C(u,1) = u$
+    \item $C(u_2, v_2) - C(u_2, v_1) - C(u_1, v_2) + C(u_1, v_1) \geq 0$ (2-increasing property)
+\end{enumerate}
+
+A copula is a cumulative density function on the unit square with uniform marginal distributions.
+
+\vspace{0.5em}
+
+\textbf{Theorem 3.2 (Sklar's theorem)}
+
+Let $F$ and $G$ be the marginal distributions of $X$ and $Y$, and $H$ be their joint distribution. There exists copula $C$ such that:
+\[
+H(x,y) = C(F(x), G(y))
+\]
+
+\textbf{Uniqueness}: If $F$ and $G$ are continuous, then $C$ is unique.
+
+\textbf{Converse}: Conversely, if $F$ and $G$ are distributions and $C$ is a copula, then $H$ defined above is a joint distribution function with marginals $F$ and $G$ for any copula $C$.
+
+\vspace{0.5em}
+
+\textbf{Invariance to monotone transformations}
+
+For strictly monotone transformations of marginal random variables, copulas are invariant (or change in predictable ways). This is why copulas isolate the dependence structure.
+
+\vspace{0.5em}
+
+\textbf{Theorem 3.3 (Invariance to monotone transformations)}
+
+Let $X$ and $Y$ be continuous random variables with copula $C$. Let $g$ and $h$ be continuous monotone functions.
+
+\textbf{Strictly increasing}: If $g$ and $h$ are strictly increasing, then $(g(X), h(Y))$ has copula $C$.
+
+\textbf{Strictly decreasing}: If $g$ and $h$ are strictly decreasing, then $(g(X), h(Y))$ have copula $\bar{C}$ defined by:
+\[
+\bar{C}(u,v) = C(1-u, 1-v) + u + v - 1
+\]
+
+\vspace{0.5em}
+
+\textbf{Independence from marginals}
+
+The copula $C$ is independent of the location or scale of the marginal distributions.
+
+\vspace{0.5em}
+
+\textbf{Theorem 3.4 (Fréchet-Hoeffding bounds)}
+
+Any copula $C$ satisfies:
+\[
+C_M(u,v) = \min(u,v) \geq C(u,v) \geq \max(u+v-1, 0) = C_m(u,v)
+\]
+
+where $C_M$ is the upper (monotonicity) copula and $C_m$ is the lower (counter-monotonicity) copula.
+
+\vspace{0.5em}
+
+\subsubsection{Gaussian copula}
+
+Derived from the bivariate Gaussian distribution with mean $\mu = (0,0)'$ and correlation $\rho$:
+\[
+\Sigma = \begin{pmatrix} 1 & \rho \\ \rho & 1 \end{pmatrix}
+\]
+
+where $\Phi_\rho(x,y)$ is the bivariate normal CDF. The Gaussian copula is:
+\[
+C_\rho^{\text{Gauss}}(u,v) = \Phi_\rho(\Phi^{-1}(u), \Phi^{-1}(v))
+\]
+
+\textbf{Explicit form}:
+\[
+C_\rho^{\text{Gauss}}(u,v) = \int_{-\infty}^{\Phi^{-1}(u)} \int_{-\infty}^{\Phi^{-1}(v)} \frac{1}{2\pi\sqrt{1-\rho^2}} \exp\left(-\frac{x^2 - 2\rho xy + y^2}{2(1-\rho^2)}\right) dxdy
+\]
+
+\textbf{Key property}: $C_\rho^{\text{Gauss}}$ is the copula of any bivariate Gaussian with correlation $\rho$, allowing non-Gaussian marginals to have Gaussian dependence structure.
+
+\vspace{0.5em}
+
+\subsubsection{Student-t copula}
+
+Derived from the multivariate Student-t distribution with $\nu$ degrees of freedom and dependence parameter $-1 \leq \rho \leq 1$:
+\[
+C_{\rho,\nu}^{\text{Student}}(u,v) = T_{\rho,\nu}(t_\nu^{-1}(u), t_\nu^{-1}(v))
+\]
+
+where $t_\nu$ is univariate Student-t CDF and $T_{\rho,\nu}$ is bivariate Student-t CDF with $\nu$ degrees of freedom.
+
+\textbf{Explicit form}:
+\[
+C_{\rho,\nu}^{\text{Student}}(u,v) = \int_{-\infty}^{t_\nu^{-1}(u)} \int_{-\infty}^{t_\nu^{-1}(v)} \frac{1}{2\pi\sqrt{1-\rho^2}} \left(1 + \frac{x^2 - 2\rho xy + y^2}{\nu(1-\rho^2)}\right)^{-\frac{\nu+2}{2}} dxdy
+\]
+
+\textbf{Limiting behavior}: As $\nu \to \infty$, $C_{\rho,\nu}^{\text{Student}} \to C_\rho^{\text{Gauss}}$.
+
+\textbf{Tail dependence}: Student-t copula exhibits stronger joint comovements in the tails compared to Gaussian copula (important for risk modeling).
+
+\vspace{0.5em}
+
+\subsubsection{Estimation and calibration}
+
+\textbf{Copula family selection}: Based on field knowledge and presence of upper/lower tail dependence.
+
+\vspace{0.5em}
+
+\textbf{Two main estimation approaches}: maximum likelihood estimation (MLE) and pseudo-maximum likelihood estimation (PMLE).
+
+\vspace{0.5em}
+
+\textbf{Maximum likelihood estimation (MLE)}
+
+Jointly fit marginal distributions and copula. Log-likelihood:
+\[
+L = L_C + \sum_{j=1}^d L_j
+\]
+
+where:
+\[
+L_C = \sum_{i=1}^n \log\left(c(F_{X_1}(x_{i1}), \ldots, F_{X_d}(x_{id}))\right)
+\]
+\[
+L_j = \sum_{i=1}^n \log(f_{X_j}(x_{ij})), \quad j=1,\ldots,d
+\]
+
+\textbf{Pitfall}: High-dimensional optimization difficult for large $d$ (hard to find suitable starting values). Pseudo-MLE preferred in practice.
+
+\vspace{0.5em}
+
+\textbf{Pseudo-maximum likelihood estimation (PMLE)}
+
+Two-step procedure: (1) Fit marginal distributions. (2) Maximize $L_C$ using estimated marginal CDFs:
+\[
+\max_{\theta_C} \sum_{i=1}^n \log\left(c(\hat{F}_{X_1}(x_{i1}), \ldots, \hat{F}_{X_d}(x_{id}); \theta_C)\right)
+\]
+
+Avoids high-dimensional optimization.
+
+\vspace{0.5em}
+
+\textbf{Step 1: Parametric PMLE}
+
+Estimate marginals by parametric family:
+\[
+\hat{\theta}_j = \arg\max_{\theta_j} \sum_{i=1}^n \log(f_{X_j}(x_{ij}; \theta_j)), \quad \hat{F}_{X_j}(\cdot) = F_{X_j}(\cdot; \hat{\theta}_j)
+\]
+
+\vspace{0.5em}
+
+\textbf{Step 1: Semi-parametric PMLE}
+
+Use empirical CDF:
+\[
+\hat{F}_{X_j}(u) = \frac{1}{n+1}\sum_{i=1}^n \mathbb{1}(x_i \leq u)
+\]
+
+Divide by $n+1$ (not $n$) so that $\hat{F}_{X_j}(\max_i x_{ij}) = \frac{n}{n+1} < 1$, avoiding numerical issues in copula parameter optimization.
+
+%-------------------
+
+\end{document}
