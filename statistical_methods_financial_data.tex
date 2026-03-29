@@ -1041,4 +1041,200 @@ Divide by $n+1$ (not $n$) so that $\hat{F}_{X_j}(\max_i x_{ij}) = \frac{n}{n+1} 
 
 %-------------------
 
+
+\section{Dimension reduction}
+High-dimensional data are computationally costly and hard to visualize; some methods fail when dimension exceeds sample size. 
+
+\subsection{Principal component analysis (PCA)}
+
+\textbf{Objective}
+
+PCA constructs uncorrelated components that capture maximal variation; its goals are data reduction and interpretation.
+
+The computation reduces to solving an eigenvalue-eigenvector problem. Assume $d$-dimensional random vector $X$ has covariance matrix $\Sigma$ with eigenvalues $\lambda_1 \geq \lambda_2 \geq \cdots \geq \lambda_d \geq 0$.
+
+\vspace{0.5em}
+
+Consider the $d$ linear combinations:
+\[
+\begin{aligned}
+Y_1 &= l_{11}X_1 + l_{21}X_2 + \cdots + l_{d1}X_d \\
+Y_2 &= l_{12}X_1 + l_{22}X_2 + \cdots + l_{d2}X_d \\
+&\vdots \\
+Y_d &= l_{1d}X_1 + l_{2d}X_2 + \cdots + l_{dd}X_d
+\end{aligned}
+\]
+
+The variances and covariances of the newly constructed variables are:
+\[
+\text{Var}[Y_i] = l_i'\Sigma l_i, \quad i = 1, \ldots, d
+\]
+\[
+\text{Cov}[Y_i, Y_j] = l_i'\Sigma l_j, \quad i, j = 1, \ldots, d
+\]
+
+where $l_i = (l_{1i}, \ldots, l_{di})'$. The idea of PCA is to construct variables $Y_1, \ldots, Y_d$ that are uncorrelated and whose variances are as large as possible.
+
+\vspace{0.5em}
+
+\textbf{Theorem 4.1 (Principal components)}
+
+Let $\Sigma$ be the covariance matrix associated with the $d$-dimensional random vector $X$. Let $\Sigma$ have the eigenvalue-eigenvector pairs $(\lambda_1, e_1), (\lambda_2, e_2), \ldots, (\lambda_d, e_d)$ where $\lambda_1 \geq \lambda_2 \geq \cdots \geq \lambda_d$ and $\{e_1, \ldots, e_d\}$ is orthonormal. The $i$-th principal component is then given by:
+\[
+Y_i = e_i'X, \quad i = 1, \ldots, d
+\]
+
+With these choices:
+\[
+\text{Var}[Y_i] = e_i'\Sigma e_i = \lambda_i, \quad i = 1, \ldots, d
+\]
+\[
+\text{Cov}[Y_i, Y_j] = e_i'\Sigma e_j = 0, \quad i, j = 1, \ldots, d
+\]
+
+The above theorem gives a way to construct an orthonormal basis for which the transformed variables $Y_1, \ldots, Y_d$ are uncorrelated and whose variances are as large as possible (and equal to the eigenvalues of $\Sigma$).
+
+\vspace{0.5em}
+
+\textbf{Total Variance}
+
+It holds that the total variance of the transformed variables is equal to the total variance of the original variables:
+\[
+\sum_{i=1}^{d} \text{Var}[X_i] = \sigma_{11} + \cdots + \sigma_{dd} = \text{tr}(\Sigma) = \lambda_1 + \cdots + \lambda_d = \sum_{i=1}^{d} \text{Var}[Y_i]
+\]
+
+Therefore, the proportion of total variance due to the $i$-th principal component is equal to:
+\[
+\frac{\lambda_i}{\lambda_1 + \lambda_2 + \cdots + \lambda_d}, \quad i = 1, \ldots, d
+\]
+
+\vspace{0.5em}
+
+\textbf{Selecting the Number of Principal Components}
+
+Criteria to select the number of principal components are ad hoc and boil down to two common approaches:
+
+\begin{itemize}
+    \item Choose the first $k$ components that explain 80\% or 90\% of total variation.
+    \item Plot $\lambda_i$ versus the index $i$. Such a plot is called a \textbf{screeplot}. The number of components is then determined visually based on the so-called \textbf{elbow} in the plot.
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Geometric Interpretation}
+
+Geometrically, principal components represent a selection of a new coordinate system obtained by orthogonally transforming the original system. The new axes represent directions with maximum variability.
+
+\vspace{0.5em}
+
+\textbf{Standardization}
+
+If components of $X$ are in different units, \textbf{first standardize} the variables as:
+\[
+Z = V^{-1/2}(X - \mu)
+\]
+where $V^{1/2}$ is the diagonal matrix with standard deviations. By standardizing, variables are equally important initially. A single variable several orders of magnitude larger would dominate the first principal component. Hence, rescale for variables in different units or orders of magnitude. 
+
+\textbf{Note}: Standardization is usually not applied for stock returns, as these are in the same units and principal components are also expressed in these units.
+
+\subsection{Factor models}
+
+Factor models try to \textbf{explain the observed variable through a combination of other variables}. Popular in modelling financial returns with a smaller number of fundamental variables called factors or risk factors. Factor analysis models are classified by variable types: macroeconomic, fundamental, or latent factors.
+
+A \textbf{factor model for excess equity returns} is:
+\[
+X_{i,t} = \beta_{i,0} + \beta_{i,1}F_{1,t} + \cdots + \beta_{i,q}F_{q,t} + \varepsilon_{i,t}, \quad (i = 1, \ldots, d)
+\]
+
+where $X_{i,t}$ denotes the return of asset $i$ at time $t$, $F_{1,t}, \ldots, F_{q,t}$ are factors at time $t$, and $\varepsilon_{i,t}$ are uncorrelated, mean-zero random variables called \textbf{idiosyncratic risks of individual stocks}. \textbf{The assumption that idiosyncratic risks are uncorrelated between different assets means all cross-correlation is due to common factors}. Depending on the model, either the loadings, the factors, or both are unknown and must be estimated.
+
+In vectorized format:
+\[
+X_t = \beta_0 + BF_t + \varepsilon_t
+\]
+
+where $X_t = (X_{1,t}, \ldots, X_{d,t})'$, $\beta_0 = (\beta_{1,0}, \ldots, \beta_{d,0})'$, $F_t = (F_{1,t}, \ldots, F_{q,t})'$, and $B$ is the $d \times q$ matrix of factor loadings:
+\[
+B = \begin{pmatrix} \beta_{1,1} & \cdots & \beta_{1,q} \\ \vdots & \ddots & \vdots \\ \beta_{d,1} & \cdots & \beta_{d,q} \end{pmatrix}
+\]
+
+\textbf{Under the assumption that factors and idiosyncratic components are mutually independent, the covariance matrix of $X_t$ is decomposed as}:
+\[
+\Sigma_X = B\Sigma_F B' + \Sigma_\varepsilon
+\]
+
+where $\Sigma_F$ is the covariance matrix of the factors and $\Sigma_\varepsilon$ is the covariance matrix of the idiosyncratic component. \textbf{The latter is diagonal under the assumption that idiosyncratic risks are uncorrelated}. \textbf{In this representation, the right-hand side has fewer free variables than the left-hand side as dimension of returns $d$ increases}.
+
+\subsubsection{Observed factor models}
+
+\textbf{Most observed factor models are based on macroeconomic or fundamental factors}. Sharpe (1963) introduced the CAPM single-factor model using the excess return on the market portfolio as a factor. In CAPM, the market risk factor is the only source of risk besides idiosyncratic risk. 
+\textbf{With enough factors, all commonalities between assets are accounted for and $\varepsilon$ truly represents idiosyncratic risk}. 
+
+\vspace{0.5em}
+
+\textbf{Critical Assumption: Uncorrelated Idiosyncratic Risks}
+
+\begin{itemize}
+    \item \textbf{Violation}: \textbf{Cross-correlations between $\varepsilon_{j,t}$ and $\varepsilon_{k,t}$ ($j \neq k$) create biases when the factor model estimates correlations between equity returns}.
+    
+    \item \textbf{Scope of Bias}: Lack of cross-correlation is \textbf{not} an assumption of multivariate regression and does not bias regression coefficients or $\varepsilon$ variances. \textbf{Biases arise only when estimating covariances between equity returns}.
+    
+    \item \textbf{Checking}: Use residuals from multivariate regression; compute their sample correlation matrix.
+\end{itemize}
+
+\subsubsection{Statistical factor models}
+
+A disadvantage of \textbf{observed-factor models is the possibility of misspecification}. Selecting risk factors involves data-mining, risking that new factors are data-driven artifacts. Additionally, using many factors fails to reduce dimensionality, contradicting factor models' primary motivation. \textbf{A solution is to assume a latent factor structure without explicitly specifying which factors to use}. \textbf{Possibilities include using principal components as latent factors}.
+
+\vspace{0.5em}
+
+\textbf{Example 4.3 (Principal component regression).} \textbf{Principal component regression (PCR) is one way to construct a statistical factor model based on unobserved factors}. First, PCA determines how many principal components to retain. Then, regression determines factor loadings of latent factors with respect to a response variable. Results can remain at this stage or transform regression coefficients back to original variables using PCA loadings. \textbf{PCR is often used to avoid problems of multicollinearity}.
+
+\subsection{Regularization}
+
+\textbf{Least squares estimates have low bias and variability when} the relationship between $Y$ and $X$ is linear and $n \gg p$. \textbf{When $n \approx p$, least squares can have high variance, resulting in overfitting and poor predictions}. \textbf{When $n < p$, there is no unique least squares solution (infinite estimation variance); the sample covariance matrix is singular when $p \geq n$}.
+
+When many variables $X$ have little or no effect on $Y$ (irrelevant variables), including them increases model complexity and interpretability difficulty. \textbf{To reduce coefficient variance and improve prediction accuracy, fit a model using all $p$ predictors with a technique that constrains or regularizes coefficient estimates, equivalently shrinking them towards zero}.
+
+\subsubsection{Ridge regression}
+
+Ridge regression minimizes:
+\[
+\sum_{i=1}^{n}\left(y_i - \beta_0 - \sum_{j=1}^{p}\beta_j x_{ij}\right)^2 + \lambda \sum_{j=1}^{p}\beta_j^2 = RSS + \lambda \sum_{j=1}^{p}\beta_j^2
+\]
+where $\lambda \geq 0$ is a tuning parameter. The \textbf{shrinkage penalty} $\lambda \sum_{j=1}^{p}\beta_j^2$ shrinks estimates towards zero; $\textbf{Note: penalty not applied to intercept}$ $\beta_0$. When $\lambda = 0$, ridge yields least squares; as $\lambda \to \infty$, estimates approach zero. \textbf{Standardize predictors first} using:
+\[
+\tilde{x}_{ij} = \frac{x_{ij}}{\hat{\sigma}_j}
+\]
+where $\hat{\sigma}_j$ is the standard deviation of predictor $j$. \textbf{Standardization equates all predictors to unit variance}.
+
+\vspace{0.5em}
+
+\textbf{Bias-Variance Trade-off}: As $\lambda$ increases, ridge flexibility decreases, reducing variance but increasing bias. Ridge excels when least squares estimates have high variance (i.e., $p$ slightly below $n$, or $p > n$ where OLS fails).
+
+\subsubsection{Lasso}
+
+\textbf{Ridge regression has one important disadvantage: the penalty never forces coefficients exactly to zero (unless $\lambda = \infty$), so the model includes all $p$ variables}. \textbf{This aspect can challenge model interpretation, especially when $p$ is large}. The lasso overcomes this disadvantage. Lasso coefficients minimize:
+\[
+RSS + \lambda \sum_{j=1}^{p}|\beta_j|
+\]
+
+\textbf{it forces some coefficient estimates to be exactly zero when $\lambda$ is sufficiently large, performing variable selection}. \textbf{Lasso models are generally much easier to interpret than ridge models, yielding sparse models} (only a subset of variables). When $\lambda = 0$, lasso gives least squares. \textbf{When $\lambda$ becomes sufficiently large, lasso gives the null model with all coefficients equal to zero}.
+
+\vspace{0.5em}
+
+\textbf{Note}: With very large $\lambda$, ridge coefficients approach zero but lasso coefficients become exactly zero.
+
+\vspace{0.5em}
+
+\textbf{Tuning Parameter Selection}: Instead of arbitrarily choosing $\lambda$, use \textbf{cross-validation}. (1) Choose a grid of $\lambda$ values. (2) Compute cross-validation error for each $\lambda$. (3) Select the $\lambda$ with smallest cross-validation error. (4) Re-fit the model using all observations with the selected $\lambda$.
+
+
+\section{Resampling and Markov chain Monte Carlo methods}
+
+
+
+
+
+
 \end{document}

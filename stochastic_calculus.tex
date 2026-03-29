@@ -614,8 +614,316 @@ A market is complete if and only if there exists a unique martingale measure.
 %-------------------
 \section{Brownian Motion}
 
+
+Definition: \textbf{Standard Brownian motion}
+\vspace{0.5em}
+
+A \textit{standard Brownian motion} $\{W_t : t \geq 0\}$ is an adapted stochastic process, built on a filtered probability space $(\Omega, \mathcal{F}, \mathbb{F}, \mathbb{P})$ such that:
+
+\begin{itemize}
+	\item (MB1) $\forall \omega \in \Omega$, $W_0(\omega) = 0$
+	\item (MB2) $\forall 0 \leq t_0 \leq t_1 \leq \ldots \leq t_k$, the random variables $W_{t_1} - W_{t_0}$, $W_{t_2} - W_{t_1}$, $\ldots$, $W_{t_k} - W_{t_{k-1}}$ are independent
+	\item (MB3) $\forall s, t \geq 0$ such that $s < t$, the random variable $W_t - W_s$ is normally distributed with expectation 0 and variance $t - s$, i.e. $W_t - W_s \sim N(0, t - s)$
+	\item (MB4) $\forall \omega \in \Omega$, the path $t \to W_t(\omega)$ is continuous
+\end{itemize}
+\vspace{1em}
+
+
+\textbf{Technical condition} ( $(\Omega, \mathcal{F}, \mathbb{F}, \mathbb{P})$ is our filtered probability space.
+)
+
+Since we will work with almost-sure equalities, we require that the set of events which have a zero-probability to occur be included in the sigma-algebra $\mathcal{F}_0$, which is to say that the set
+\[
+\mathcal{N} = \{A \in \mathcal{F} : \mathbb{P}(A) = 0\} \subseteq \mathcal{F}_0.
+\]
+
+Thus, if $X$ is $\mathcal{F}_t$--measurable and $Y = X$ $\mathbb{P}$--almost-surely, then we know that $Y$ is $\mathcal{F}_t$--measurable.
+\vspace{1em}
+
+In general, the filtration we use is $\mathbb{F} = \{\mathcal{F}_t : t > 0\}$ where
+\[
+\mathcal{F}_t = \sigma(\{W_s : 0 \leq s \leq t\} \cup \mathcal{N})
+\]
+is the smallest sigma-algebra for which the random variables $W_s : 0 \leq s \leq t$ are measurable and that contains the zero-measure sets.
+\vspace{1em}
+
+\textbf{Reminder about the Gaussian distribution}
+
+If $X \sim N(\mu, \sigma^2)$, then $f_X(x) = \frac{1}{\sigma\sqrt{2\pi}} \exp\left\{-\frac{(x-\mu)^2}{2\sigma^2}\right\}$, $F_X(x) = \int_{-\infty}^{x} f_X(y) dy$, and $\forall a, b \in \mathbb{R}, a < b$: $\mathbb{P}[a < X \leq b] = \int_a^b f_X(x) dx$.
+\vspace{1em}
+
+Theorem: \textbf{Independence and covariance for multivariate normal}
+\vspace{0.5em}
+
+If $X$ and $Y$ are two random variables following a multivariate normal distribution, then $X$ and $Y$ are independent if and only if their covariance is zero.
+\vspace{1em}
+
+\textit{Note:} In general, independence guarantees zero covariance, but the reverse is not necessarily true.
+\vspace{1em}
+
+Theorem: \textbf{Brownian motion is a martingale and a Markovian process}
+\vspace{1em}
+
+Definition: \textbf{Continuous-time martingale}
+\vspace{0.5em}
+
+On the filtered probability space $(\Omega, \mathcal{F}, \mathbb{F}, \mathbb{P})$, where $\mathbb{F}$ is the filtration $\{\mathcal{F}_t : t \geq 0\}$, the stochastic process $M = \{M_t : t \geq 0\}$ is a martingale in continuous time if:
+
+\begin{itemize}
+	\item (M1) $\forall t \geq 0$, $\mathbb{E}^{\mathbb{P}}[|M_t|] < \infty$
+	\item (M2) $\forall t \geq 0$, $M_t$ is $\mathcal{F}_t$--measurable
+	\item (M3) $\forall s, t \geq 0$ such that $s < t$, $\mathbb{E}^{\mathbb{P}}[M_t \mid \mathcal{F}_s] = M_s$
+\end{itemize}
+\vspace{1em}
+
+Theorem: \textbf{Brownian paths are nowhere differentiable}
+\vspace{0.5em}
+
+$\forall \omega \in \Omega$, the path $t \to W_t(\omega)$ is nowhere differentiable.
+\vspace{1em}
+
+Definition: \textbf{Multidimensional Brownian motion}
+\vspace{0.5em}
+
+Standard Brownian motion $W$ of dimension $n$ is a family of random vectors
+\[
+\left\{ W_t = \left( W_t^{(1)}, \ldots, W_t^{(n)} \right)^{\top} : t \geq 0 \right\}
+\]
+where $W^{(1)}, \ldots, W^{(n)}$ represent independent Brownian motions built on the filtered probability space $(\Omega, \mathcal{F}, \mathbb{F}, \mathbb{P})$.
+\vspace{1em}
+
+Theorem: \textbf{Linear transformation of independent Brownian motions}
+\vspace{0.5em}
+
+Let $W = \left(W^{(1)}, \ldots, W^{(n)}\right)^{\top}$ be a vector of independent Brownian motions and $\Gamma = (\gamma_{ij})_{i,j \in \{1,2,\ldots,n\}}$ be a matrix of constants. For all $t$, define
+\[
+B_t = \Gamma W_t.
+\]
+Then $B_t$ is a random vector of dimension $n$, the $i$th component of which is $B_t^{(i)} = \sum_{k=1}^{n} \gamma_{ik} W_t^{(k)}$. Moreover
+\[
+\operatorname{Cov}\left[B_t^{(i)}, B_t^{(j)}\right] = t \sum_{k=1}^{n} \gamma_{ik}\gamma_{jk}
+\]
+and
+\[
+\operatorname{Cor}\left[B_t^{(i)}, B_t^{(j)}\right] = \frac{\sum_{k=1}^{n} \gamma_{ik}\gamma_{jk}}{\sqrt{\sum_{k=1}^{n} \gamma_{ik}^2} \sqrt{\sum_{k=1}^{n} \gamma_{jk}^2}}.
+\]
+\vspace{1em}
+
+Theorem: \textbf{Representation of correlated Brownian motions}
+\vspace{0.5em}
+
+Let $B^{(1)}, \ldots, B^{(n)}$ represent correlated Brownian motions, built on the filtered probability space $(\Omega, \mathcal{F}, \mathbb{F}, \mathbb{P})$ and such that
+\[
+\forall i,j \in \{1, \ldots, n\} \text{ and } \forall t > 0, \quad \operatorname{Cor}\left[B_t^{(i)}, B_t^{(j)}\right] = \rho_{ij}.
+\]
+There exists a matrix $\mathbf{A}$ of format $n \times n$ such that
+\begin{itemize}
+	\item[(i)] $\mathbf{B} = \mathbf{A}\mathbf{W}$
+	\item[(ii)] $\operatorname{Cor}\left[B_t^{(i)}, B_t^{(j)}\right] = \rho_{ij}$
+	\item[(iii)] $\mathbf{W}$ is made of independent Brownian motions.
+\end{itemize}
+\vspace{1em}
+
+Definition: For all $m \in \mathbb{N}$, the sequence of independent random variables $\{\xi_k^{(m)} : k \in \mathbb{N}\}$ is defined such that
+\[
+\xi_k^{(m)} = \begin{cases} -m^{-\frac{1}{2}} & \text{with probability } \frac{1}{2}, \\ m^{-\frac{1}{2}} & \text{with probability } \frac{1}{2}. \end{cases}
+\]
+Note that $\mathbb{E}\left[\xi_k^{(m)}\right] = 0$ and $\operatorname{Var}\left[\xi_k^{(m)}\right] = \frac{1}{m}$.
+\vspace{1em}
+
+Definition: \textbf{Random walk}
+\vspace{0.5em}
+
+For all $m \in \mathbb{N}$, let $X_0^{(m)} = 0$ and
+\[
+\forall n \in \left\{0, \frac{1}{m}, \frac{2}{m}, \ldots \right\}, \quad X_n^{(m)} = \sum_{k=1}^{mn} \xi_k^{(m)}.
+\]
+The process $X^{(m)} = \left\{X_n^{(m)} : n \in \left\{0, \frac{1}{m}, \frac{2}{m}, \ldots \right\}\right\}$ is a random walk.
+\vspace{1em}
+
+
 %-------------------
 \section{Stochastic Integral}
 
+Definition: \textbf{Basic stochastic process}
+\vspace{0.5em}
+
+We call $X$ a basic stochastic process if $X$ admits the following representation:
+\[
+X_t(\omega) = C(\omega) \mathbb{I}_{[a,b]}(t)
+\]
+where $a < b \in \mathbb{R}$ and $C$ is a random variable, $\mathcal{F}_a$--measurable and square-integrable, i.e. $\mathbb{E}^{\mathbb{P}}[C^2] < \infty$.
+\vspace{1em}
+
+Theorem: \textbf{Adapted and left-continuous processes are predictable}
+\vspace{0.5em}
+
+$\mathbb{F}$--adapted processes, the paths of which are left-continuous, are $\mathbb{F}$--predictable processes. In particular, $\mathbb{F}$--adapted processes with continuous paths are $\mathbb{F}$--predictable. (cf. Revuz and Yor)
+\vspace{1em}
+
+Definition: \textbf{Stochastic integral}
+\vspace{0.5em}
+
+The stochastic integral of $X$ with respect to the Brownian motion is defined as
+\[
+\left(\int_0^t X_s dW_s\right)(\omega) = C(\omega)(W_{t \wedge b}(\omega) - W_{t \wedge a}(\omega))
+\]
+\[
+= \begin{cases}
+0 & \text{if } 0 \leq t \leq a \\
+C(\omega)(W_t(\omega) - W_a(\omega)) & \text{if } a < t < b \\
+C(\omega)(W_b(\omega) - W_a(\omega)) & \text{if } b < t.
+\end{cases}
+\]
+\vspace{1em}
+
+Lemma: If $X$ is a basic stochastic process, then
+\[
+\left\{\int_0^t X_s dW_s : t \geq 0\right\}
+\]
+is a $(\Omega, \mathcal{F}, \mathbb{F}, \mathbb{P})$--martingale.
+\vspace{1em}
+
+Definition: \textbf{Stochastic integral with respect to a martingale}
+\vspace{0.5em}
+
+The stochastic integral of $X$ with respect to a square-integrable martingale $M$ is defined as
+\[
+\left(\int_0^t X_s dM_s\right)(\omega) = C(\omega)(M_{t \wedge b}(\omega) - M_{t \wedge a}(\omega))
+\]
+\[
+= \begin{cases}
+0 & \text{if } 0 \leq t \leq a \\
+C(\omega)(M_t(\omega) - M_a(\omega)) & \text{if } a < t \leq b \\
+C(\omega)(M_b(\omega) - M_a(\omega)) & \text{if } b < t.
+\end{cases}
+\]
+\vspace{1em}
+
+\textit{Note:} The proof of Lemma 1 is still valid if the Brownian motion is replaced with the martingale $M$. Therefore, $\left\{\int_0^t X_s dM_s\right\}_{t \geq 0}$ is a martingale.
+\vspace{1em}
+
+Lemma: \textbf{Expectation of product of integrals (Lemma 2)}
+\vspace{0.5em}
+
+If $X$ and $Y$ are basic processes, then for all $t \geq 0$,
+\[
+\mathbb{E}^{\mathbb{P}}\left[\int_0^t X_s Y_s \, ds\right] = \mathbb{E}^{\mathbb{P}}\left[\left(\int_0^t X_s dW_s\right)\left(\int_0^t Y_s dW_s\right)\right].
+\]
+\vspace{1em}
+
+Definition: \textbf{Simple stochastic process}
+\vspace{0.5em}
+
+We call $X$ a \textbf{simple stochastic process} if $X$ is a finite sum of basic processes:
+\[
+X_t(\omega) = \sum_{i=1}^{n} C_i(\omega)\mathbb{1}_{(a_i, b_i]}(t).
+\]
+
+where $a_1 < b_1 \leq a_2 < b_2 \leq \ldots \leq a_n < b_n$, and $C_i$ is $\mathcal{F}_{a_i}$--measurable.
+\vspace{1em}
+
+Definition: \textbf{Stochastic integral of X (simple processes)}
+\vspace{0.5em}
+
+The stochastic integral of $X$ with respect to the Brownian motion is defined as the sum of the stochastic integrals of the basic processes which constitute $X$:
+\[
+\int_0^t X_s dW_s = \sum_{i=1}^{n} \int_0^t C_i\mathbb{1}_{(a_i, b_i]}(s) dW_s.
+\]
+\vspace{1em}
+
+Lemma: \textbf{Martingale property of stochastic integral (Lemma 3)}
+\vspace{0.5em}
+
+If $X$ is a simple stochastic process, then $\left\{\int_0^t X_s dW_s : t \geq 0\right\}$ is a $(\Omega, \mathcal{F}, \mathbb{F}, \mathbb{P})$--martingale.
+\vspace{1em}
+
+Lemma: \textbf{Itô isometry (Lemma 4)}
+\vspace{0.5em}
+
+If $X$ is a simple process, then for all $t \geq 0$,
+\[
+\mathbb{E}^{\mathbb{P}}\left[\int_0^t X_s^2 ds\right] = \mathbb{E}^{\mathbb{P}}\left[\left(\int_0^t X_s dW_s\right)^2\right].
+\]
+\vspace{1em}
+
+
+\section{Stochastic differential equation and Ito’s lemma}
+
+Theorem: \textbf{Itô's lemma}
+\vspace{0.5em}
+
+Let $W$ be a Brownian motion and let $f : \mathbb{R} \to \mathbb{R}$ be a function, the first two derivatives of which exist and are continuous. Then $\forall 0 \leq t \leq T$,
+\[
+f(W_t) - f(W_0) \stackrel{\mathbb{P}}{=a.s.} \int_0^t \frac{df}{dw}(W_s) dW_s + \frac{1}{2} \int_0^t \frac{d^2f}{dw^2}(W_s) ds. \tag{7}
+\]
+\vspace{1em}
+
+In its differential form, Equation (7) is written
+\[
+df(W_t) = \frac{df}{dw}(W_t) dW_t + \frac{1}{2} \frac{d^2f}{dw^2}(W_t) dt.
+\]
+\vspace{1em}
+
+Theorem: \textbf{Itô's lemma, first extension}
+\vspace{0.5em}
+
+Let $W$ be a Brownian motion and let $f : \mathbb{R} \times [0, \infty) \to \mathbb{R}$ be a function, the first and second partial derivatives of which exist and are continuous. Then $\forall 0 \leq t \leq T$,
+\[
+f(W_t, t) - f(W_0, 0) = \int_0^t \left(\frac{\partial f}{\partial t}(W_s, s) + \frac{1}{2} \frac{\partial^2 f}{\partial w^2}(W_s, s)\right) ds + \int_0^t \frac{\partial f}{\partial w}(W_s, s) dW_s.
+\]
+\vspace{1em}
+
+Definition: \textbf{Itô process}
+\vspace{0.5em}
+
+An \textbf{Itô process} is defined to be a process $X = \{X_t\}_{0 \leq t \leq T}$ such that:
+\[
+X_t \equiv X_0 + \int_0^t K_s ds + \int_0^t H_s dW_s \tag{8}
+\]
+
+where $K = \{K_t\}_{0 \leq t \leq T}$ and $H = \{H_t\}_{0 \leq t \leq T}$ are processes adapted to the Brownian filtration $\{\mathcal{F}_t\}_{0 \leq t \leq T}$, satisfying
+\[
+\mathbb{P}\left[\int_0^T |K_s| ds < \infty\right] = 1 \quad \text{and} \quad \mathbb{P}\left[\int_0^T |H_s|^2 ds < \infty\right] = 1.
+\]
+\vspace{1em}
+
+Written in its differential form, the Itô process becomes
+\[
+dX_t = K_t dt + H_t dW_t.
+\]
+\vspace{1em}
+
+Theorem: 
+
+If 
+\[
+\mathbb{E}^{\mathbb{P}}\left[\int_0^T |H_s|^2 ds\right] < \infty, \tag{9}
+\]
+
+then the process $M = \{M_t\}_{0 \leq t \leq T}$ where $M_t = \int_0^t H_s dW_s$ is a $(\{\mathcal{F}_t\}_{0 \leq t \leq T}, \mathbb{P})$--martingale.
+\vspace{1em}
+
+Definition: \textbf{Quadratic variation}
+\vspace{0.5em}
+
+Let $0 = t_0^{(n)} \leq t_1^{(n)} \leq \ldots \leq t_n^{(n)} = T$ be a partition of the same interval $[0, T]$ such that $\lim_{n \to \infty} \max_{i \in \{1, \ldots, n\}} \left(t_i^{(n)} - t_{i-1}^{(n)}\right) = 0$. The \textbf{quadratic variation} of the stochastic process $X$ is
+\[
+\lim_{n \to \infty} \sum_{i=1}^{n} \left(X_{t_i^{(n)}} - X_{t_{i-1}^{(n)}}\right)^2
+\]
+\vspace{1em}
+
+Definition: 
+
+In the particular case where the stochastic process is an Itô process,
+\[
+X_t \equiv X_0 + \int_0^t K_s ds + \int_0^t H_s dW_s
+\]
+
+its \textbf{quadratic variation} is
+\[
+\langle X \rangle_t = \int_0^t H_s^2 ds.
+\]
+\vspace{1em}
 
 \end{document}

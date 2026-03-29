@@ -1,0 +1,1 @@
+This repository contains concise study summaries for courses in the HEC Master of Science in Financial Engineering program. I created these notes for my personal use; the repository is public in case others find them useful. The summaries are based on materials used in the HEC courses. Both the LaTeX source files and the most recent compiled PDFs are included.

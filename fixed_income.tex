@@ -885,4 +885,89 @@ Simulation adjusted to compute difference between current and previous reset rat
 \textit{Rolling caps/floors:} Nominal is not constant. When caplet (floorlet) not exercised (not in-the-money), its notional is added to next caplet (floorlet). At each reset date, apply test and adjust payoff accordingly.
 
 %-------------------
+
+
+\section{Credit Risk Fundamentals}
+
+\subsection{Key Concepts and Stylized Facts}
+
+\subsubsection{Credit Risk and Credit Spreads}
+
+\textbf{Credit risk} is the possibility that a counterparty fails to meet contractual obligations, causing \textbf{price fluctuations reflecting exposure to credit risk}. Exposure has two components: \textbf{timing of default} (measured by default probability) and \textbf{magnitude of default} (measured by loss upon default), decomposing as: (credit exposure) $\times$ (loss given default).
+
+Credit risk exposure on fixed-income securities is compensated by the \textbf{credit spread}. For a debt claim with value $D$ promising $M$ at period end: 
+
+$$D = \frac{M}{1 + y} \quad \text{(8.1)}$$
+
+If defaultable with EMM probability $q$ of delivering $M(1-L)$, where $L$ is \textbf{loss given default}:
+
+$$D = \frac{M(1-q) + M(1-L)q}{1 + r} \quad \text{(8.2)}$$
+
+where $r$ is the risk-free rate. Combining (8.1) and (8.2):
+
+$$y - r \approx qL \quad \text{(8.3)}$$
+
+\textbf{Fundamental decomposition:} credit spread = (default probability) $\times$ (loss given default).
+
+\textbf{Yield spread vs. credit spread:} Yield spread of defaultable instruments includes credit spread plus other premiums (tax, liquidity); attributing the fraction to credit risk is empirical.
+
+\subsubsection{The Term Structure of Credit Spreads}
+
+Consider homogeneous defaultable securities (comparable credit risk source) with observable market prices at different maturities. Assuming credit risk is the only factor in total yield spread, the \textbf{term structure of credit spreads (TSCS)} is calculated as the difference between yield-to-maturity and (risk-free) zero-coupon yield for the same horizon.
+
+\textbf{TSCS dynamics:} Credit spreads are volatile and counter-cyclical (spikes during 2007-08 crisis and 2020 Covid pandemic). Like risk-free zero-coupon yields, the TSCS is usually increasing during quiet times and inverted in crisis times.
+
+\subsubsection{Recovery Rates}
+
+\textbf{Recovery rate:} One minus loss given default; one of two major constituents of credit spread. For defaultable zero-coupon bond value $D(t,T)$ (promising \$1 at $T$), let $\tau$ = random default time and $\delta$ = recovery rate.
+
+Three recovery rate definitions exist:
+
+\vspace{0.3em}
+\noindent\textbf{Recovery of Face Value (RFV):}
+
+\textbf{Definition:} Fraction of defaultable claim nominal at default time.
+
+\textbf{Formula:} $D(T,T) = 1_{\tau>T} + \frac{\delta}{P(t,T)} 1_{\tau \leq T}$ \quad (8.4)
+
+\textbf{Usage:} Rating agencies (e.g., Moody's) for historical recovery rates.
+
+\textbf{Pro:} Eases comparison across claims; accommodates delay to resolve default.
+
+\textbf{Con:} Makes $\delta$ sensitive to timing of default.
+
+\vspace{0.3em}
+\noindent\textbf{Recovery of Treasury Value (RTV):}
+
+\textbf{Definition:} Fraction of equivalent risk-free zero-coupon bond at default time.
+
+\textbf{Formula:} $D(T,T) = 1_{\tau>T} + \delta 1_{\tau \leq T}$ \quad (8.5)
+
+\textbf{Pro:} Makes $\delta$ insensitive to timing of default; simplifies valuation of defaultable claims.
+
+\textbf{Con:} Not how recovery is determined in practice.
+
+\vspace{0.3em}
+\noindent\textbf{Recovery of Market Value (RMV):}
+
+\textbf{Definition:} Fraction of pre-default bond value at default time. $\delta$ = proportional value loss incurred immediately by claimholder.
+
+\textbf{Formula:} $D(T,T) = 1_{\tau>T} + \delta \frac{D(\tau^-, T)}{P(t,T)} 1_{\tau \leq T}$ \quad (8.6)
+
+\textbf{Theory (Duffie-Singleton 1999):} Under reduced-form approach, RMV allows expressing defaultable claim value as EMM expectation at risk-adjusted rate $R_t = r_t + s_t$ (where $s_t$ = credit spread):
+
+$$D(t,T) = \mathbb{E}^Q\left[\exp\left(-\int_t^T (r_u + s_u)\,du\right)\right] \quad \text{(8.7)}$$
+
+\textbf{Pricing implication:} Valuation of defaultable claims uses same tools as yield curve and zero-coupon bond pricing (factor models or HJM framework) for dynamics of $\{r_t\}$ and $\{s_t\}$.
+
+\vspace{0.3em}
+\noindent\textbf{Stylized Facts on Recovery Rates:}
+
+\textbf{Priority impact:} Recovery rates greatly impacted by claim priority; higher for secured bank loans than secured bonds.
+
+\textbf{Negative correlation:} Strong stylized fact—negative correlation between default likelihood and recovery. OLS regression (Moody's 1983–2023 data): coefficient $-6.56$ (p-value $2.8 \times 10^{-8}$), $R^2 = 55\%$.
+
+\textbf{Amplification effect:} Credit spread = default probability $\times$ loss given default (equation 8.3). Negative correlation between these factors amplifies credit spread variations.
+
+
 \end{document}
