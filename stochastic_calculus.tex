@@ -722,8 +722,12 @@ There exists a matrix $\mathbf{A}$ of format $n \times n$ such that
 	\item[(ii)] $\operatorname{Cor}\left[B_t^{(i)}, B_t^{(j)}\right] = \rho_{ij}$
 	\item[(iii)] $\mathbf{W}$ is made of independent Brownian motions.
 \end{itemize}
+
 \vspace{1em}
 
+\textbf{Note:} $\mathbf{A}$ can be obtained by Cholesky decomposition: $\mathbf{A}= \frac{1}{\sqrt{t}}U^{\top}$ where $U$ is the upper triangular matrix coming from the Cholesky decomposition of the covariance matrix: $V_B=U^{\top}U$.
+
+\vspace{1em}
 Definition: For all $m \in \mathbb{N}$, the sequence of independent random variables $\{\xi_k^{(m)} : k \in \mathbb{N}\}$ is defined such that
 \[
 \xi_k^{(m)} = \begin{cases} -m^{-\frac{1}{2}} & \text{with probability } \frac{1}{2}, \\ m^{-\frac{1}{2}} & \text{with probability } \frac{1}{2}. \end{cases}
@@ -741,6 +745,25 @@ For all $m \in \mathbb{N}$, let $X_0^{(m)} = 0$ and
 The process $X^{(m)} = \left\{X_n^{(m)} : n \in \left\{0, \frac{1}{m}, \frac{2}{m}, \ldots \right\}\right\}$ is a random walk.
 \vspace{1em}
 
+As $m$ increases, we take shorter and shorter steps (of length $m^{-\frac{1}{2}}$), as well as faster and faster (every $\frac{1}{m}$ time unit). Note that
+\[
+\mathbb{E}\left[X_n^{(m)}\right] = \sum_{k=1}^{mn} \mathbb{E}\left[\xi_k^{(m)}\right] = 0
+\]
+and
+\[
+\operatorname{Var}\left[X_n^{(m)}\right] = \sum_{k=1}^{mn} \operatorname{Var}\left[\xi_k^{(m)}\right] = \frac{mn}{m} = n.
+\]
+Moreover, the central limit theorem implies that $X_n^{(m)}$ converges in law to a $N(0, n)$ distribution as $m$ increases to infinity.
+\vspace{1em}
+
+\begin{itemize}
+	\item Let's set
+	\[
+	Y_0^{(m)} = 0 \quad \text{and} \quad Y_t^{(m)} = X_{\lfloor n/m \rfloor}^{(m)} \quad \text{for all } t \in \left(\frac{n}{m}, \frac{n+1}{m}\right].
+	\]
+	The process $Y^{(m)}$ is defined for all $t \geq 0$. It is possible to show that this sequence $\left\{ Y^{(m)} : m \in \mathbb{N} \right\}$ of stochastic processes obtained from random walks converges in law to a Brownian motion process as $m$ tends to infinity. The challenge is to show that the limit has continuous paths.
+\end{itemize}
+\vspace{1em}
 
 %-------------------
 \section{Stochastic Integral}
@@ -809,6 +832,12 @@ Lemma: \textbf{Expectation of product of integrals (Lemma 2)}
 If $X$ and $Y$ are basic processes, then for all $t \geq 0$,
 \[
 \mathbb{E}^{\mathbb{P}}\left[\int_0^t X_s Y_s \, ds\right] = \mathbb{E}^{\mathbb{P}}\left[\left(\int_0^t X_s dW_s\right)\left(\int_0^t Y_s dW_s\right)\right].
+\]
+\vspace{1em}
+
+\textit{Also Note:} Since the Itô integral for basic processes is a martingale, then
+\[
+\mathbb{E}^{\mathbb{P}}\left[\int_0^t X_s dW_s\right] = \mathbb{E}^{\mathbb{P}}\left[\int_0^0 X_s dW_s\right] = 0.
 \]
 \vspace{1em}
 

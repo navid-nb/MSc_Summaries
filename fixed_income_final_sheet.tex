@@ -1,0 +1,455 @@
+\documentclass[landscape]{article}
+\usepackage[margin=0.08in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage[fontsize=6.85pt]{scrextend}
+\usepackage{xcolor}
+\usepackage{newtxtext,newtxmath}
+\setlist{nosep,leftmargin=*,topsep=0pt,partopsep=0pt,itemsep=0pt}
+\setlength{\columnsep}{0.05in}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.2pt}
+\setlength{\abovedisplayskip}{1pt}
+\setlength{\belowdisplayskip}{1pt}
+\setlength{\abovedisplayshortskip}{0.5pt}
+\setlength{\belowdisplayshortskip}{0.5pt}
+\setlength{\thinmuskip}{1mu}
+\setlength{\medmuskip}{1mu plus 0.5mu minus 0.5mu}
+\setlength{\thickmuskip}{2mu plus 1mu}
+\linespread{0.85}
+\pagestyle{empty}
+\raggedcolumns
+
+\abovedisplayskip=1pt
+\belowdisplayskip=1pt
+
+% Define colors
+\definecolor{sectioncolor}{RGB}{220,20,60}      % Crimson for sections
+\definecolor{subsectioncolor}{RGB}{0,102,204}   % Blue for subsections
+\definecolor{subsubsectioncolor}{RGB}{0,153,76} % Teal/Green for subsubsections
+\definecolor{modelcolor}{RGB}{255,102,0}        % Orange for model names
+\definecolor{conceptcolor}{RGB}{153,0,153}      % Purple for key concepts
+\definecolor{rulecolor}{RGB}{0,102,102}         % Dark teal for rules
+\definecolor{keycolor}{RGB}{204,51,0}           % Dark red for key terms
+\definecolor{equationcolor}{RGB}{0,0,153}       % Dark blue for equations
+
+\renewcommand{\subsection}[1]{\textcolor{subsectioncolor}{\textbf{#1:}}}
+\renewcommand{\subsubsection}[1]{\textcolor{subsubsectioncolor}{\textbf{#1:}}} \newcommand{\model}[1]{\textcolor{modelcolor}{\textbf{#1:}}}
+\newcommand{\concept}[1]{\textcolor{conceptcolor}{\textbf{#1}}}
+\newcommand{\rulec}[1]{\textcolor{rulecolor}{\textbf{#1:}}}
+\newcommand{\keyterm}[1]{\textcolor{keycolor}{\textbf{#1}}}
+\newcommand{\eqrefn}[1]{\textcolor{equationcolor}{\textbf{(#1):}}} \newcommand{\sectionbox}[1]{{\noindent\textbf{\underline{#1}}}} \begin{document}
+\begin{multicols}{4}
+\setlength{\multicolsep}{0pt}
+
+\textcolor{sectioncolor}{\textbf{Credit Risk Fundamentals.}}
+\textcolor{subsectioncolor}{\textbf{Key Concepts and Stylized Facts.}}
+\textcolor{subsubsectioncolor}{\textbf{Credit Risk and Credit Spreads:}} \textbf{Credit risk} is the possibility that a counterparty fails to meet contractual obligations, causing \textbf{price fluctuations that reflect this exposure to credit risk}. Exposure has two components: \textbf{timing of dflt} (measured by \textbf{dflt prob}) and \textbf{magnitude of dflt} (measured by \textbf{loss upon dflt}). Loss upon dflt can be decomposed into the product of the credit exposure (i.e., 
+the transaction amount that is at risk), and the proportional loss given dflt.
+
+Credit risk exposure is compensated by additional yield (\textbf{credit spread}). For a debt claim with value $D$ promising $M$ at period end: $D = \frac{M}{1 + y}$. with EMM dflt prob $q$, where $L$ is \keyterm{loss given dflt} $D = \frac{M(1-q) + M(1-L)q}{1 + r}$. Combining the expressions above: $y - r \approx qL$. \textbf{Fundamental decomposition:} credit spread = (\concept{EMM dflt prob}) $\times$ (\keyterm{loss given dflt}).
+
+\textbf{Total Yield spread vs. credit spread:} Tot spread includes credit spread plus other premiums (tax, liquidity); finding the fraction coming from credit risk is empirical issue.
+
+\textcolor{subsubsectioncolor}{\textbf{The Term Structure of Credit Spreads:}} Use homogeneous dflble securities (comparable credit risk source) with observable market prices at different maturities. Assuming credit risk is the only factor in total yield spread, the \textbf{term structure of credit spreads (TSCS)} isthe diff of yield-to-maturity and (risk-free) ZCY for the same horizon.
+
+\textbf{TSCS dynamics:} Credit spreads are volatile and counter-cyclical (spikes in crisis). Like risk-free zcy, TSCS is usually increasing during quiet times and inverted in crisis times. typical shapes: increasing, decreasing or humped.so can smooth TSCS using NSS.
+
+Building a TSCS requires a homogeneous set of defaultable claims (comparable dflt likelihood and losses given dflt). This homogeneity is achieved by grouping claims by type of instrument (e.g., senior unsecured bonds), risk class (e.g., rating), or industry. However, stricter grouping criteria reduce the population size, potentially introducing noisier data.
+
+\textcolor{subsubsectioncolor}{\textbf{Recovery Rates:}} $\delta=1-L$; For dfltble ZC-bond value $D(t,T)$ (promising \$1 at $T$), let $\tau$ = random dflt time: 3 def exist:
+
+\noindent\keyterm{Recov of Face Value (RFV):} 
+Fraction of defaultable claim nominal at dflt time.
+$D(T,T) = 1_{\tau>T} + \frac{\delta}{P(t,T)} 1_{\tau \leq T}$. \textbf{Usage:} Rating agencies (e.g., Moody's) for historical recov rates.
+\textbf{Pro:} Eases comparison across claims; also accommodate the delay required to resolve the dflt event.
+\textbf{Con:} Makes $\delta$ sensitive to timing of dflt.
+
+\noindent\keyterm{Recov of Treasury Value (RTV):} 
+Fraction of equivalent risk-free zero-coupon bond at dflt time.  In case of dflt, the claimholder receives $\delta P(\tau, T)$ at time $\tau$ instead of 1 at time $T$.
+$D(T,T) = 1_{\tau>T} + \delta 1_{\tau \leq T}$. 
+\textbf{Pro:} Makes $\delta$ insensitive to timing of dflt; simplifies valuation of defaultable claims.
+\textbf{Con:} Not how recov is determined in practice.
+
+\noindent\keyterm{Recov of Market Value (RMV):} 
+Fraction of pre-dflt bond value at dflt time. $\delta$ = proportional value loss incurred immediately by claimholder.
+$D(T,T) = 1_{\tau>T} + \delta \frac{D(\tau^-, T)}{P(t,T)} 1_{\tau \leq T}$
+
+\textbf{Theory (Duffie-Singleton 1999):} Under reduced-form approach, RMV allows expressing defaultable claim value as EMM expectation: $D(t,T) = \mathbb{E}^Q\left[\exp\left(-\int_t^T (r_u + s_u)\,du\right)\right]$
+So Valuation of dfltble claims uses same tools as yield curve and zc-bond pricing.
+
+\noindent\textbf{Stylized Facts on Recov Rates:} \concept{Priority impact:}
+\noindent\textbf{Bank loans:} First lien $>$ Senior unsecured $>$ Second lien; \noindent\textbf{Bonds:} First lien $>$ Second lien $>$ Senior unsecured $>$  Senior subordinated$\approx$ Subordinated  $>$ Junior subordinated
+;\textbf{Note:}Bank loans recover more than bonds at equivalent priority.
+\concept{Negative correlation:} There is negative corr between dflt likelihood and recov. Or to say positive corr between dflt likelihood and loss given dflt. 
+\concept{Amplification effect:} since Credit spread = dflt prob $\times$ loss given dflt,  the positive corr between these two factors amplifies 
+the variations in credit spreads.
+
+
+\textcolor{subsectioncolor}{\textbf{Corporate Bonds and Loans.}}
+\textcolor{subsubsectioncolor}{\textbf{The Debt Contract:}} Corporations borrow funds by issuing bonds or getting loans. standard provisions are nominal amount, maturity, and coupon payment schedule. Beyond that, bond and loan contracts are often augmented with covenants.
+
+\keyterm{pari passu clause:} to deal with multiple creditors. It stipulates that all provisions should apply uniformly to all creditors. It doesn't mean that all creditors have the same rights. instead, there exists a variety of provisions and covenants that creates substantial discrepancies across the cash flows that creditors are entitled to. The clause, implies that obligors must give to their existing creditors the same benefits that they would grant to future lenders. A consequence of the pari passu clause is that if an issuer wishes to revise the debt contract terms, she must do it with the knowledge of all creditors.
+So, the pari passu clause deters shareholders and bondholders from acting strategically at the expense of one another. On one hand, it prevents shareholders from conducting a bondholder wealth expropriation by renegotiating debt terms in a bilateral manner, taking advantage of a lack of coordination among creditors. On the other hand, it prevents bondholders from engaging into a creditors' race by accelerating the liquidation of assets at the first signs of financial distress. Overall, the clause encourages collective bargaining with all creditors during debt restructurings.
+
+\keyterm{negative pledge covenant:} prevents borrower from pledging assets to another lender. this clause forbids the issuance of new debt claims with equal or higher priority to existing debt.
+
+\textbf{Covenants (four categories):} [\concept{1.Restrictions on investments:} prohibition of certain investment activities, control on M\&A, asset sales restrictions (asset sweep covenant), net-worth covenant, financial ratio limits (interest coverage, debt-to-equity, current ratio, EBITDA-debt), collateralization; \concept{2.Restrictions on shareholders' cash flows:} dividend policy constraints, forbid share repurchase; \concept{3. Debt priority structure:} negative pledge cov, priority assignment to lender categories (senior, junior); \concept{4. Option-like provisions:} early repayment opts (callable, putable, convertible), sinking fund provision (periodic principal amortization at pre-specified price, trustee repurchases, interest savings)]
+
+\textcolor{subsubsectioncolor}{\textbf{Syndicated Loans:}} hybrid form of debt placement between loans and bonds. A debt agreement is initiated by the borrower and a bank (\textbf{arranger}) and marketed through a syndicate. The decision to syndicate the loan may occur before or after the deal is closed.  terms of the deal (face value, maturity, covenants, pricing...) are solely negotiated by the borrower and the arranger.
+Then arranger uses its network to distribute shares of the loan to banks that agree to become \textbf{members of the syndicate} (linked by pari passu clauses). The search for members can be done \textbf{with a firm commitment} or on a \textbf{best effort basis}. In the first case, arranger agrees to take on the undistributed shares of the loan. The borrower is therefore certain to raise all the funds he wants. The arranger will charge higher fees for this service.
+
+\textbf{Syndicate structure:} [Leader—arranger: lead manager; Co-agents:administrative tasks (documentation agent drafts documents, admin agent calculates interests/collects repayment, collateral agent); Members: remaining syndicate participants]
+
+\textcolor{subsectioncolor}{\textbf{Credit Ratings:}} The senior unsecured bond is primarily evaluated, and the ratings of other issues are 
+adjusted by notching for consistency. It is  based on accounting data, market data, historical default rates, and judgmental factors.
+Moody's uses a rating system combining letters (Aaa, Aa, A, Baa, Ba, B, Caa, Ca, C) with numerical modifiers (1, 2, 3) following the letters. S\&P uses a system combining letters (AAA, AA, A, BBB, BB, B, CCC, CC, C) with signs (+, -, or null) following the letters.
+
+
+There are \textbf{three types of credit events} recorded by rating agencies: [\concept{1.Missed/delayed payment}: interest and/or principal, sometimes referred to as \keyterm{technical dflt}, consequences vary depending on interpretation (temporary liquidity shortage vs. sign of serious dflt); \concept{2.Distressed exchange:} outcome of renegotiations via private workout (debt restructuring), exchange original claim for modified one, debt-for-debt swap (lighter obligations) or debt-for-equity swap (lenders waive rights, become owners); \keyterm{holdout problem}: when having many creditors (each individually better off keeping prior deal), solution is to distinguish fundamental rights (nom, cpn, maturity) from non-fundamental (provisions, covenants); \concept{3. Bankruptcy filing}: company officially files for bankruptcy to begin court-supervised renegotiation]
+
+Credit ratings take into account both default likelihood and the expected loss given default. They are typically calculated as "through the business cycle" measures (they are meant to convey an indication about creditworthiness for an investor wishing to hold 
+the bond over a mid-run horizon). Although ratings aim at reflecting a forward-looking credit 
+assessment, their revisions are not as frequent as market price updates. To incorporate more 
+timely information, rating agencies also issue "watch lists". historically lower ratings have been associated with higher likelihood of default and lower recovery rates. 
+
+\textcolor{subsectioncolor}{\textbf{Credit Derivatives.}}
+\textcolor{subsubsectioncolor}{\textbf{CDS Contract (credit default swap):}} With a \textbf{single-name CDS}, a \textbf{protection-buyer pays a periodic (usually quarterly) premium} ($p_{CDS}$) to a \textbf{protection-seller} who, compensates for the loss in case of default.
+
+can have \textbf{physical settl} (chalenge is limited number of outstanding bonds) or \textbf{Cash settl} (chalenge is defaulted bond is not liquid) or The third possibility is a \textbf{settl auction}.
+
+Before the \textbf{2008 crisis}, the prem of the CDS was quoted so that it corresponds to a \textbf{zero value for the CDS upon inception}. new convention is to have an upfront payment.
+
+An \textbf{index CDS} is a contract \textbf{written on a credit index}. The \textbf{buyer of the index CDS receives a periodic prem} (for investing in a credit portfolio). The \textbf{seller of the CDS} is compensated for the dflt loss for each credit event affecting the set of references underlying the credit index.
+two major credit index families are \textbf{Dow Jones CDX in North America} and the \textbf{iTraxx in Europe}. \textbf{CDX North America investment grade (CDX NA IG)} is a portfolio of 125 single-name CDS. The \textbf{CDX North America high yield} is a portfolio of 100 single-name CDS. the iTraxx Europe is a portfolio of 125 single-name CDS. The iTraxx Crossover contains 50 high-yield references.
+
+\textcolor{subsectioncolor}{\textbf{Quoting Convention:}} Instead of quoting a CDS prem which varies from one risky underlying reference to another, CDS contracts now have an annual fixed coupon of either 100 bps for investment grade or 500 bps for high yield/speculative grade. $\tau$: payment frequency (usually the quarter); $t_j$, $j = 1, \ldots, n$ are CDS payment dates (contract maturity is $T = n\tau$).
+
+The evaluation of the CDS contract requires the specification of a \concept{cumulative survival function} $CS(t)$ that represents the \textbf{prob that the reference entity does not dflt until time} $t$. The \concept{ISDA model} posits a simple exponential decay, $CS(t) = \exp(-\lambda t)$, where $\lambda$ is referred to as the \textbf{hazard rate} and represents the \textbf{instantaneous EMM dflt prob}.
+present value of the fixed leg of CDS is $V_1 = p_{CDS} \sum_{j=1}^{n} \tau CS(t_j)d(t_j) + \frac{1}{2}p_{CDS} \sum_{j=1}^{n} \tau [CS(t_{j-1}) - CS(t_j)]d(t_j)$
+
+where $d(t_j)$ is the discount factor up to time $t_j$. The second term accounts for the \textbf{accrued CDS} prem that must be paid if dflt occurs between two payment dates (proxied by $0.5*p_{CDS}$).
+present value of the variable leg of the CDS is $V_2 = (1-R) \sum_{j=1}^{n} [CS(t_{j-1}) - CS(t_j)]d(t_j)$
+   where $R$ stands for the \textbf{recovery rate}.
+
+fair pricing $\rightarrow V_1 = V_2$. Let $\lambda^*$ denote the \textbf{hazard rate} resulting from the CDS fair price. The corresponding cumulative survival function is denoted by $CS^*(t)$.
+
+\textbf{Turning to the new quoting convention}, the fair pricing of the CDS contract with fixed coupon $c_{CDS}$ (equal to 100 bps for investment grade or 500 bps for high yield/speculative grade) and upfront payment $U$ entails $U = -c_{CDS} \sum_{j=1}^{n} \tau CS^*(t_j)d(t_j) - \frac{1}{2} c_{CDS} \sum_{j=1}^{n} \tau [CS^*(t_{j-1}) - CS^*(t_j)]d(t_j) + (1 - R) \sum_{j=1}^{n} [CS^*(t_{j-1}) - CS^*(t_j)]d(t_j)$
+
+combining the two legs: $U = (p_{CDS} - c_{CDS}) \sum_{j=1}^{n} \tau CS^*(t_j)d(t_j) + \frac{1}{2}(p_{CDS} - c_{CDS}) \sum_{j=1}^{n} \tau [CS^*(t_{j-1}) - CS^*(t_j)]d(t_j)$
+
+Note that the upfront payment is positive when $p_{CDS} > c_{CDS}$. But it can also be negative.
+Note that by using the product of discount factors with cumulative survival functions, the \textbf{ISDA model implicitly assumes} independence between interest rate risk and credit risk.
+
+\textcolor{subsubsectioncolor}{\textbf{CDS-bond Basis:}} Since credit risk can be traded on the corporate \textbf{bond market} and on the \textbf{CDS market}, the credit spreads implied from the two markets should be quite the same to bar arbitrage. \textbf{Arbitrage strategy:} [\textcolor{keycolor}{\textbf{1) Buy CDS protection}}, \textcolor{keycolor}{\textbf{2) Buy floating rate corp bond}}, \textcolor{keycolor}{\textbf{3) Sell bond on repo market}}]. In the absence of arbitrage: $p_{CDS} = y - r$.
+
+\textbf{CDS-bond basis}: diff between CDS spread and the corporate bond yield spread, should theoretically be nil.
+There are, \textbf{practical reasons for the CDS-bond basis to} \textbf{deviate from zero}. First, corporations dont issue floating rate bonds with maturities exactly as of CDS contracts. The corporate bond yield spread must therefore be recovered from fixed rate bond issues with specific maturities, and this causes some measurement problems to estimate $y$. Second and more importantly, \textbf{there are limits to arbitrage}, which prevent market participants to constantly implement the strategy described above. These frictions include trading liquidity, funding cost, counterparty risk, and collateral quality.
+In practice, the CDS-bond basis for a reference $j$ and maturity $T$ is $\text{Basis}_j(T) = p_{CDS,j}(T) - PECDS_j(T)$
+where $PECDS_j(T)$, the Par Equivalent CDS, \textbf{is the theoretical bond-implied CDS spread}.
+
+method to compute $PECDS_j(T)$ using ISDA model: First, one \textbf{determines the} \textbf{cumulative survival function} $CS^*(t)$ ensuring the fair pricing of the \concept{CDS} (i.e., equalizing the fixed and variable legs). Then, one solves for the smallest shift in the term structure of $CS^*(t)$ that reconciles the theoretical bond price with its market value. That is, the bond-implied cumulative survival function is $CS_{\text{bond}}(t) = CS^*(t) + \varepsilon$ where $\varepsilon = \text{argmin } [PV(CS_{\text{bond}}(t)) - \text{Market price}]^2$
+
+Finally, $PECDS_j(T)$ is calculated as the par equivalent \concept{CDS} spread using $CS_{\text{bond}}(t)$ as the cumulative survival function: $PECDS_j(T) = \frac{(1 - R) \sum_{j=1}^{n}[CS_{\text{bond}}(t_{j-1}) - CS_{\text{bond}}(t_j)]d(t_j)}{\sum_{j=1}^{n} \tau CS_{\text{bond}}(t_j)d(t_j) + \frac{1}{2}\sum_{j=1}^{n} [CS_{\text{bond}}(t_{j-1}) - CS_{\text{bond}}(t_j)]d(t_j)}$
+
+\textbf{The CDS-bond basis has typically been negative on the U.S. corporate bond market.}
+
+\textcolor{subsectioncolor}{\textbf{CLO (Collateralized Loan Obligations):}} The \textbf{CLO is an investment structure pooling a collection of defaultable assets} (loans, bonds, mortgage-backed securities, etc.) via a special purpose vehicle. \textbf{All the assets are securitized and sold by tranches}. \textbf{Typical tranches:} [\textcolor{keycolor}{\textbf{Senior}}—70–90\% of debt nom; \textcolor{keycolor}{\textbf{Mezzanine (other debt)}}—5–15\% of debt nom; \textcolor{keycolor}{\textbf{Equity (subordinate)}}—2–15\% of debt nom]
+. The securitization of CLOs allows banks to market illiquid loans and increase their lending activity. But it may also provide them an incentive to get rid of bad quality loans (\concept{moral hazard issue}).
+
+Over the maturity period of the CLO, \textbf{defaults on the pool of underlying loans will impact on the payoff of tranches depending on their seniority level}. first default reduce the payoff of equity tranche. subsequent defaults affect payoff of mezzanine and ultimately senior tranches.
+As a consequence, while the \textbf{risk borne by the equity tranche is essentially related to the highest level of default risk among the underlying loans}, the \textbf{risk borne by senior tranches is mostly related to default clusters and is a joint effect of total default risk and default correlation risk}.
+
+\textcolor{sectioncolor}{\textbf{Structural Models:}}
+posit the dynamics of state variable (the 
+asset value or a cash flow of the issuing firm) and use to contingent claims analysis.
+\textbf{preference-free pricing rule} holds if we can replicate the payoff (assuming no arbitrage). even if the state variable are not traded, but \textbf{ one contingent claim (e.g. stock) is traded } we can do that. Also if the value of assets is strongly correlated with a market variable, like a mining firm or energy firm. structural approach can therefore be applied to \textbf{publicly traded firms}. 
+
+\textcolor{subsectioncolor}{\textbf{The Merton Model and its Extensions.}}
+\textcolor{subsubsectioncolor}{\textbf{ZC Debt:}} \textbf{\model{Merton's (1974) model}}: simple capital structure: equity and a ZC debt with nom amount $M$ and maturity $T$. Let $\{v_t\}_{t \geq 0}$ : firm's \textbf{assets}. The \textbf{terminal wealth of shareholders and debtholders is:} $S_T = \max(v_T - M, 0)$ and $D_T = \min(v_T, M) = M - \max(M - v_T, 0)$.
+
+\textbf{equity is a call opt on the value of assets and debt provides a position on the nom amount minus a put opt on assets}. taking BMS assumtions and that the value of the firm's assets followa a GBM with vol $\sigma$, we obtain: $S = v\Phi(d_1) - Me^{-rT}\Phi(d_2)$ and $D = Me^{-rT}\Phi(d_2) + v\Phi(-d_1)$.
+
+with $d_1 = \frac{\ln\left(\frac{v}{M}\right) + \left(r + \frac{\sigma^2}{2}\right)T}{\sigma\sqrt{T}}$ and $d_2 = \frac{\ln\left(\frac{v}{M}\right) + \left(r - \frac{\sigma^2}{2}\right)T}{\sigma\sqrt{T}}$.
+
+($\Phi(d_2)$ is the EMM probability of no default and $\Phi(-d_2) = 1 - \Phi(d_2)$ is the EMM probability of default),
+
+\textbf{The yield spread ($\approx$credit spread) is:} $s(T) = -\frac{1}{T}\ln\left(\frac{D}{M}\right) - r$.
+
+The TSCS from this model can be \textbf{increasing} (for low debt levels), \textbf{decreasing} (for high debt levels), or \textbf{bell-shaped} (for intermediate debt levels). it starts from zero, because dflt is predictable, as $T \to 0$ the prob of immediate dflt approaches 0 (if $v_0 \geq M$) or 1 (if $v_0 < M$).
+
+\textbf{\model{Merton (1976) Jump Model}} $\frac{dv_t}{v_t} = (r - \lambda\mu_J)dt + \sigma dW_t + (e^J - 1)dN_t$.
+where $\{W_t\}$ is a standard Brownian motion, $\{N_t\}$ is a Poisson process with intensity $\lambda$, and $J$ is the log-jump magnitude with $\mathbb{E}[e^J - 1] = \mu_J$.
+The European call premium is: $S = \sum_{n=0}^{\infty} \frac{(a(1+\mu_J)T)^n}{n!}e^{-\lambda(1+\mu_J)T}\text{Call}_{BS}\left(v, T, M, r -\lambda \mu_J + \frac{n\ln(1+\mu_J)}{T}, \sigma^2 + \frac{n\sigma^2}{T}\right)$
+
+where $\text{Call}_{BS}$ is the Black-Scholes call premium  with modified risk-free rate and volatility, each call being weighted by the 
+probability of observing n jumps within T. set n=50 in practice.
+
+\concept{Balance sheet equality:} $D = v - S$ (debt = assets - equity).
+
+\textcolor{subsubsectioncolor}{\textbf{Secured Debt:}} \textbf{Collateral effect:} Adding collateral (guarantee or pledge) reduces risk exposure of creditors.
+
+\concept{Constant collateral value:} denoted by $K$ (with $K < M$). Terminal value of secured debt: $D_T = M \times \mathbf{1}_{v_T \geq M} + K \times \mathbf{1}_{v_T < M}$.
+
+If $K$ does not cover entire claim, remaining debt is assigned lowest priority rank among claims. Secured debt involves position in cash-or-nothing call and put. Under BMS: $D = Me^{-rT}\Phi(d_2) + K\Phi(-d_2) = e^{-rT}[K + (M-K)\Phi(d_2)]$.
+
+Adding collateral reduces risk exposure but not always. Amount covered by collateral is guaranteed but remaining debt becomes very risky (zero recovery). Net effect on debt risk depends on recovery obtained with collateral versus recovery without collateral given priority ranking.
+
+\concept{Stochastic collateral value:} Assume collateral is traded asset with price process $\{K_t\}$ following GBM: $\frac{dK_t}{K_t} = \mu_K dt + \eta dZ_t$ and $dZ_t dW_t = \rho dt$. Terminal value of secured debt: $D_T^a = M \times \mathbf{1}_{v_T \geq M} + K_T \times \mathbf{1}_{v_T < M}$. Current value under Black-Scholes: $D^a = Me^{-rT}\Phi(d_2) + K\Phi(-d_2 - \eta\sqrt{T})$.
+
+\keyterm{Wrong Way Risk:} If $\rho$ is high, collateral has little value when assets depreciate, so it will not effectively protect against dflt risk.
+
+\textcolor{subsubsectioncolor}{\textbf{Interim Payments:}} \textbf{Setup (Geske 1977):} Consider a debt of maturity $T$ generating payments $c_i$ on dates $t_i$, $i = 1, \ldots, n$ (with $T = t_n$). Notations $v_t$, $S_t$, and $D_t^c$ designate values of assets, equity and debt with coupons on date $t_i$.
+
+\textbf{Equity as compound call:} Equity is interpreted as a call opt $n$ times compounded, written on the assets. Generalizing Merton's formula, the value of the cpn bond is: $D^c = \sum_{i=1}^{n} c_i e^{-rt_i}\Phi_i(h_i, \{\theta_{ij}\}) + v\left(1 - \Phi_n\left(h_n, \{\theta_{ij}\}\right)\right)$ where $h_i = \frac{1}{\sigma\sqrt{t_i}}\left[\ln \frac{v}{v_i^*} + \left(r - \frac{\sigma^2}{2}\right)t_i\right]$ and $\theta_{ij} = \frac{\sqrt{t_i}}{\sqrt{t_j}}, \quad i < j$
+; where $\Phi_i(x_i, \{y\})$ denotes the cumulative distribution function of the standard multivariate normal law (of dimension $i$), evaluated at points $x_i$, with a variance-covariance matrix $y$.
+
+\textbf{Critical default thresholds:} $v_i^*$ = critical asset value at dflt; determined by $S(v_i^*) = c_i$ (shareholders pay if equity issuance possible).
+
+\textbf{Recursive solution:} At $T$: threshold = $c_n$. Solve $S_{n-1} = c_{n-1}$ backwards (using $S_{n-1} = v_T - D_{n-1}$) to find $v_{n-1}^*$, then $v_{n-2}^*$, etc., back to $t=0$. Computationally intensive for many intermediate payments; approximation methods recommended.
+
+\textbf{Approx by ZC decomposition:} Treating cpn debt as the sum of ZC debts: $D^c = \sum_{i=1}^{n} D_i$ where $D_i = c_i e^{-rt_i}\Phi(d_{2,i}) + v\Phi(-d_{1,i})$
+
+where $d_{1,i} = \frac{\ln(v/c_i) + (r + \frac{\sigma^2}{2})t_i}{\sigma\sqrt{t_i}}, \quad d_{2,i} = \frac{\ln(v/c_i) + (r - \frac{\sigma^2}{2})t_i}{\sigma\sqrt{t_i}}$
+
+\textbf{Applic to Short- and Long-term Debt:}
+
+Consider a company with two debt issues, one with nom value $m$ and maturity $t$ (short-term debt), the other with nom value $M$ and maturity $T$ (long-term debt). The two debts have the same priority. In the event of a short-term dflt, the creditors will share a fraction $\theta$ of the value of the assets in proportion to their nom contributions. The terminal value of the short-term debt is: $d_t = m \times \mathbf{1}_{v_t \geq m} + \frac{m}{m+M} \theta v_t \times \mathbf{1}_{v_t < m}$ and the long-term debt is: $D_T = M \times \mathbf{1}_{v_T \geq m} \times \mathbf{1}_{v_T \geq M} + \theta v_T \times \mathbf{1}_{v_t \geq m} \times \mathbf{1}_{v_T < M} + \frac{M}{m+M} \theta v_t \times \mathbf{1}_{v_t < m}$
+We therefore obtain: $d = me^{-rt}\Phi(z_2) + \frac{m}{m+M} \theta \nu \Phi(-z_1)$ and $D = Me^{-rT}\Phi_2\left(z_2, z_4; \frac{\sqrt{t}}{\sqrt{T}}\right) + \theta \nu \Phi_2\left(z_1, -z_3; -\frac{\sqrt{t}}{\sqrt{T}}\right) + \frac{M}{m+M} \theta \nu \Phi(-z_1)$ ; $z_1 = \frac{\ln(v/m) + (r + \frac{\sigma^2}{2})t}{\sigma\sqrt{t}}, z_2 = \frac{\ln(v/m) + (r - \frac{\sigma^2}{2})t}{\sigma\sqrt{t}}$ , $z_3 = \frac{\ln(v/M) + (r + \frac{\sigma^2}{2})T}{\sigma\sqrt{T}}, z_4 = \frac{\ln(v/M) + (r - \frac{\sigma^2}{2})T}{\sigma\sqrt{T}}$
+
+\textcolor{subsubsectioncolor}{\textbf{Net Worth Covenant:}}  maintain net worth above a level during. Net worth refers to the book value of the assets less all liabilities. When debts remain stable, this clause is equivalent to setting a threshold for the assets value. 
+Let $H$: threshold for asset value. If $v_t$ crosses the threshold $H$ before debt maturity $T$, the company is in default. In optional terms, equity is a call option written on the assets with a knock-out barrier $H$ (down and out call).
+Under BMS: $S = v\Phi(d_1) - Me^{-rT}\Phi(d_2) - v\left(\frac{H}{v}\right)^{2r/\sigma^2 + 1}\Phi(d_3) + Me^{-rT}\left(\frac{H}{v}\right)^{2r/\sigma^2 - 1}\Phi(d_4)$ where $d_3 = \frac{\ln(H^2/(vM)) + (r + \frac{\sigma^2}{2})T}{\sigma\sqrt{T}}, \quad d_4 = \frac{\ln(H^2/(vM)) + (r - \frac{\sigma^2}{2})T}{\sigma\sqrt{T}}$
+
+debt value obtained by $D = v - S$. From the creditors' point of view, the minimum net worth clause reduces the risk exposure because it precipitates the default of the company.
+
+\textcolor{subsubsectioncolor}{\textbf{Debt Priority:}} Determines the creditor's rank in the liquidation procedure.
+Secured debt has the highest rank of priority. In the event of liquidation, the collateral asset is first 
+sold. If the proceeds from this sale do not cover the nominal amount of the debt, the remaining 
+claim joins those of the other lenders. secured debt very often contains a negative pledge covenant.
+
+\concept{Senior and Junior Debt Formulas:} Consider company with senior debt $M_1$ and maturity $T$ and junior debt of nominal $M_2$ and same maturity $T$. The shareholders' decision to default is based on the total debt $M_1 + M_2$ (pari passu clause). Consequently, the terminal value of equity is: $S_T = \max(v_T - (M_1 + M_2), 0)$. The terminal value of senior debt is: $D_T = \min(M_1, v_T) = M_1 - \max(M_1 - v_T, 0)$ and from balance sheet equality the terminal value of junior debt is: $d_T = v_T - S_T - \min(M_1, v_T) = \max(v_T - M_1, 0) - \max(v_T - (M_1 + M_2), 0)$
+The current values are: $D = M_1 e^{-rT}\Phi(a_2) + v\Phi(-a_1)$ and $d = v\Phi(a_1) - M_1 e^{-rT}\Phi(a_2) - v\Phi(b_1) + (M_1 + M_2)e^{-rT}\Phi(b_2)$.
+with $a_1 = d_1(M_1) , a_2 = d_2(M_1) , b_1 = d_1(M_1 + M_2) , b_2 = d_2(M_1 + M_2)$.
+
+\textcolor{subsubsectioncolor}{\textbf{Stochastic Interest Rates:}} Consider the \model{Merton} model with a \concept{Heath-Jarrow-Morton} yield curve dynamics under the EMM: $\frac{dv_t}{v_t} = r_t dt + \sigma dW_t$ and $\frac{dP(t,T)}{P(t,T)} = r_t dt - \sigma_p(t,T) dZ_t$, with $\sigma_p(t,T)$ a deterministic function of time and $dW_t dZ_t = \rho dt$.
+
+$S = v\Phi(z_1) - MB(0,T)\Phi(z_2)$ with $z_1 = \frac{\ln \frac{v}{MB(0,T)} + \frac{1}{2}V(T)}{\sqrt{V(T)}}$ and $z_2 = z_1 - \sqrt{V(T)}$.
+; $V(T) = \int_0^T (\sigma^2 + \sigma_p^2(u,T) + 2\rho\sigma\sigma_p(u,T)) du$.
+
+The stochastic nature of interest rate hardly affects the credit spreads for short horizons and the 
+impact on long-term credit spreads is limited.  
+correlation between the bond returns and asset returns affects almost the whole term structure 
+and the effect is much stronger.
+
+\textcolor{subsectioncolor}{\textbf{Opt-like Provisions.}}
+\textcolor{subsubsectioncolor}{\textbf{Callable Debt:}} shareholders have the right (by design, of Amer type) to redeem the debt at any time before maturity for a price determ in advance.
+
+\textbf{CRR Approach:} debt of nom amount $M$, maturity $T$ redeemable at any time by shareholders. In general, the redemption price can be any deterministic function of time, we will simply designate it by $K$ (at maturity, we must have $K = M$).
+Let $j$ $(0 \leq j \leq n)$ denote the position in the tree, numbered from the bottom (position 0) to the top (position $n$). we number time backwards, from $k = 0$ (maturity $T$) to $k = n$ (the initial time): $G_j^k = (\pi G_{j+1}^{k-1} + (1 - \pi)G_j^{k-1})e^{-r\frac{T}{n}}$
+
+where $\pi$ is EMM prob of upward movement in underlying asset.
+
+At date $k = 1$, the algorithm starts with $D_j^1 = \min\left(K, Me^{-r\frac{T}{n}}\Phi(d_2) + v_j^1\Phi(-d_1)\right)$ where $v_j^1 = vu^{n-j-1}$
+
+and $d_1$ and $d_2$ defi with $v_j^1$. For all other periods before maturity: $D_j^k = \min\left(K, (\pi D_{j+1}^{k-1} + (1-\pi)D_j^{k-1})e^{-r\frac{T}{n}}\right)$
+
+\textbf{CRR Tree Reminder:} time to maturity $T$ is divided into $n$ periods of equal duration $T/n$. In each period, the value of the firm's assets can either go upward by being multiplied by $u$ or downward by being multiplied by $d = \frac{1}{u}$: $u = \exp(\sigma\sqrt{T/n}), \quad \pi = \frac{e^{r\frac{T}{n}} - d}{u - d}$
+
+\textcolor{subsubsectioncolor}{\textbf{Convertible Debt:}} Gives its holder the right to convert his security into a predetermined fraction of shares.
+ The conversion of the debt gives 
+rise to the issue of n new shares in addition to the N existing shares. The conversion ratio $q=\frac{n}{N+n}$ therefore measures the share of equity obtained by the creditors at the time of 
+conversion. 
+
+The terminal wealth of shareholders and creditors are: $S_T = \max(v_T - M, 0) - q \times \max\left(v_T - \frac{M}{q}, 0\right)$ and $D_T = v_T - \max(v_T - M, 0) + q \times \max\left(v_T - \frac{M}{q}, 0\right)$
+The value of the Eur convertible debt is: $D^{\text{conv}}(v,P) = v\Phi(-d_1) + Me^{-rT}[\Phi(d_2) - \Phi(d_4)] + qv\Phi(d_3)$
+where $d_1$ and $d_2$ have their usual definition and:
+
+with $d_3 = \frac{\ln \frac{qv}{M} + (r + \frac{\sigma^2}{2})T}{\sigma\sqrt{T}}$ and $d_4 = \frac{\ln \frac{qv}{M} + (r - \frac{\sigma^2}{2})T}{\sigma\sqrt{T}}$.
+
+We can use: $D_j^1 = \max\left(qv_j^1, D^{\text{conv}}(v_j^1, T/n)\right)$ with $v_j^1 = vu^{n-j-1}$. 
+For all other periods: $k \leq n$: $D_j^k = \max\left(qvu^{n-j-k}, (\pi D_{j+1}^{k-1} + (1-\pi)D_j^{k-1})e^{-r\frac{T}{n}}\right)$.
+
+\textcolor{subsubsectioncolor}{\textbf{Callable Convertible Debt:}} The shareholders' decision to call the debt or not determines the terms under which the creditors 
+will make their decision to convert or not. Subsequently, either the shareholders do not announce the repurchase of the debt, in 
+which case the creditors will choose the maximum between the continuation value and the 
+conversion value, or the shareholders announce the repurchase of the debt, in which case the 
+creditors will choose the maximum between the repurchase value and the conversion value (forced conversion).
+For all $k \leq n$: {\footnotesize $D_j^k = \min\left[ \max\left(qvu^{n-j-k}, (\pi D_{j+1}^{k-1} + (1-\pi)D_j^{k-1})e^{-r\frac{T}{n}}\right), \max(qvu^{n-j-k}, K)\right]$.}
+
+The algorithm can be initialized in period $k = 1$: $D_j^1 = \min\left[\max\left(qv_j^1, D^{\text{conv}}(v_j^1, T/n)\right), \max(qv_j^1, K)\right]$.
+
+\textcolor{subsectioncolor}{\textbf{First Passage Time Models:}} Dflt occurs when the firm's asset value falls below a threshold: $\tau = \inf(t \geq 0: v_t = H_t)$
+
+When the process $v_t$ is driven by a geometric Brownian motion and the boundary is constant $H$, the cdf of $\tau$ is $F_1(\tau) = \Phi\left(\frac{\ln(H/v) - (r - \frac{\sigma^2}{2})t}{\sigma\sqrt{t}}\right) + \left(\frac{H}{v}\right)^{\frac{2r}{\sigma^2}-1}\Phi\left(\frac{\ln(H/v) + (r - \frac{\sigma^2}{2})t}{\sigma\sqrt{t}}\right)$ and the joint cdf of $\tau$ and $v$ is $F_2(\tau, v) = \Phi\left(\frac{\ln(v/x) + (r - \frac{\sigma^2}{2})t}{\sigma\sqrt{t}}\right) - \left(\frac{H}{v}\right)^{\frac{2r}{\sigma^2}-1}\Phi\left(\frac{\ln(H^2/(vx)) + (r - \frac{\sigma^2}{2})t}{\sigma\sqrt{t}}\right)$
+
+boundary of the form $H_t = K\exp(-\gamma(T - t))$: $\tau$ remains the first passage time of a geometric Brownian motion (with drift $r - \gamma$) to the constant boundary $K\exp(-\gamma T)$.
+
+\textcolor{subsubsectioncolor}{\textbf{Black-Cox Model:}} Black and Cox (1976) solve for the pricing of the ZC bond with nom M, maturity T 
+and exponential dflt boundary $H_t = K\exp(-\gamma(T - t))$.
+The introduction of a dflt boundary alters dflt probs across all horizons. It therefore 
+provides great flexibility in modelling the TSCS. Beyond the level of credit spreads, first passage 
+time models generate a variety of shapes for the TSCS.
+
+If the default barrier grows slowly relative to the risk-free rate, the TSCS is translated 
+but essentially keeps the same shape. if the default boundary grows much faster than the risk-free rate, the shape of the TSCS 
+can be distorted.
+
+\textcolor{subsubsectioncolor}{\textbf{Briys-de Varenne Model:}} Briys and de Varenne (1997) evaluate ZC bonds with an exponential dflt boundary when int rates are stoch in the Vasicek framework. The dflt boundary is directly linked to the Treasury discount bond: $v_b(t) = \lambda MP(t,T) \quad \text{for } t < T, \quad v_b(T) = M$
+
+Under RTV assumption, upon dflt, creditors recover: $D_{bdv}(v_b) = \delta MP(t,T)$
+with $\delta < \lambda$ accounting for dflt costs.
+
+The dflt boundary position greatly impacts the TSCS. Like the Black-Cox model, the effect of corr between asset and rate dyn matters as much (if not more) than int rate vol alone on the term structure of credit spreads.
+
+\textcolor{subsubsectioncolor}{\textbf{Collin-Dufresne-Goldstein Model:}} In preceding models, leverage is static: since assets grow at rate $r$ under the EMM but debt is constant, leverage decreases over time, underestimating credit spreads. In practice, firms target leverage ratios, so debt burden should be adjusted dynamically.
+
+Collin-Dufresne and Goldstein (2001) propose a dynamic dflt threshold: $dk_t = a(y_t - b - k_t)dt$ where $y_t = \ln(v_t)$ and $a, b$ are constants.
+
+The dflt time is the first passage time of log-leverage $l_t = k_t - y_t$ to zero: $\tau = \inf(t \geq 0: l_t = 0)$.
+
+The log-leverage dyn rearrange to: $dl_t = a(L - l_t)dt - \sigma dW_t$ where $L = a^2/a - b$.
+ Thus dflt is the first passage time of a Vasicek process to zero. Under RTV (fraction $1-\omega$ recovered): $D_{cdg} = e^{-r\tau}(1 - \omega Q(\tau < T))$
+
+\textcolor{subsectioncolor}{\textbf{Estimation Methods:}} We review three methods to estimate the current asset value and asset return vol assuming assets are driven by a GBM using a time series of $m$ daily stock prices. Let $S$ denote the market capitalization (stock price $\times$ shares outstanding).
+
+Equity is a call opt on assets. Synthesizing the firm's liabilities to a single dflt point at the 1-year horizon, the amount due is proxied by short-term debt ($std$) plus half of long-term debt ($ltd$). Under Black-Scholes, market cap is: $S = v\Phi(d_1) - (std + 0.5ltd)e^{-r}\Phi(d_2) := f(v, \sigma)$ where $d_1 = \frac{\ln\frac{v}{std + 0.5ltd} + r + \frac{\sigma^2}{2}}{\sigma}, \quad d_2 = \frac{\ln\frac{v}{std + 0.5ltd} + r - \frac{\sigma^2}{2}}{\sigma}$
+
+Setting $r$ equal to the 1-year risk-free rate.
+
+\textcolor{subsubsectioncolor}{\textbf{System of Equations:}} obtained from Itô's lemma: $\sigma_S = \sigma \Phi(d_1) := g(v, \sigma)$.
+ Using observed $\sigma_S^{obs}$ (historical or implied), one can solve: $\sigma_S^{obs} = f(v, \sigma)$ and $\sigma_S^{obs} = g(v, \sigma)$
+\textcolor{subsubsectioncolor}{\textbf{Iterative Approach (\model{KMV-Moody's Method}):}} \textbf{Step 1:} Set initial asset vol $\hat{\sigma}_0 = \sigma_S$ (equity vol), then invert $f(v, \sigma)$ to obtain daily asset values: $v_j^{(0)} = f^{-1}(S_j^{obs}, \hat{\sigma}_0), \quad j = 1, \ldots, m$
+
+\textbf{Step 2:} Update asset vol by computing the std dev of log-returns $\{\ln(v_{j+1}/v_j)\}$ to get $\hat{\sigma}_1$, then repeat until convergence: $v_j^{(1)} = f^{-1}(S_j^{obs}, \hat{\sigma}_1), \quad j = 1, \ldots, m$
+
+Because of leverage effect, asset vol converges from above.
+
+\textcolor{subsubsectioncolor}{\textbf{Maximum Likelihood:}} Since the asset value process is a GBM, log-returns are normally distributed: $\ln(v_{j+1}/v_j) \sim \mathcal{N}(\mu_d, \sigma_d^2)$. The joint likelihood of $m$ observations is: $L = \prod_{j=1}^m \frac{1}{\sigma_d\sqrt{2\pi}} \exp\left(-\frac{(\ln\frac{v_{j+1}}{v_j} - \mu_d)^2}{2\sigma_d^2}\right)$
+
+Maximizing the log-likelihood: $\arg\max_{\mu_d,\sigma_d} \ln L = \arg\max_{\mu_d,\sigma_d} \left(-\frac{1}{2}(m\ln 2\pi + m\ln\sigma_d^2) + \frac{1}{\sigma_d^2}\sum_{j=1}^m (\ln\frac{v_{j+1}}{v_j} - \mu_d)^2\right)$
+
+When asset value is unobservable, the log-likelihood becomes: $\ln L = -\frac{1}{2}\left(m\ln 2\pi + m\ln\sigma_d^2 + \frac{1}{\sigma_d^2}\sum_{j=1}^m (\ln\frac{v_{j+1}}{v_j} - \mu_d)^2\right) - \sum_{j=1}^m \ln\left|\frac{\partial f}{\partial v}(\hat{v}_j(\sigma), \sigma)\right|$
+
+The partial deriv $\partial f/\partial v$ is the Black-Scholes call delta. The MLE provides estimates for $\mu_d, \sigma_d$, and therefore $v$. When $v$ is driven by a GBM, the iterative method and MLE are asymptotically equivalent.
+
+\textcolor{subsectioncolor}{\textbf{Reminder: Binary Options:}} \textbf{Cash-or-nothing:} Call $= M\Phi(d_2)e^{-rT}$, Put $= M\Phi(-d_2)e^{-rT}$; Payoffs: $\max(M \cdot \mathbf{1}_{v_T>K}, 0)$ and $\max(M \cdot \mathbf{1}_{v_T \leq K}, 0)$.
+
+\textbf{Asset-or-nothing:} Call $= v\Phi(d_1)$, Put $= v\Phi(-d_1)$; Payoffs: $\max(v_T \cdot \mathbf{1}_{v_T>K}, 0)$ and $\max(v_T \cdot \mathbf{1}_{v_T \leq K}, 0)$.
+
+$d_1 = \frac{\ln(v/K) + (r + \sigma^2/2)T}{\sigma\sqrt{T}}$ and $d_2 = d_1 - \sigma\sqrt{T}$.
+
+$d_1 = \frac{\ln(v/K) + (r + \sigma^2/2)T}{\sigma\sqrt{T}}$ and $d_2 = d_1 - \sigma\sqrt{T}$.
+
+\textcolor{sectioncolor}{\textbf{Reduced-form Models:}}
+View default as an exogenous event that can be statistically estimated or calibrated from market data.
+therefore loses in terms of economic interpretation, but it relies on a weaker set of assumptions 
+and makes full use of timely market information.
+
+\textcolor{subsectioncolor}{\textbf{Intensity-based Dflt Modeling.}}
+\textcolor{subsubsectioncolor}{\textbf{Preliminaries:}} The cumulative survival function with constant hazard rate $h$: $\text{Prob}(\tau > t) = \exp(-ht)$. More generally with time-dep hazard rate: $\text{Prob}(\tau > t) = \exp\left(-\int_0^t h(s)ds\right)$.
+
+For small time-step $\Delta t$, the cond dflt prob: $\text{Prob}(\tau \leq t + \Delta t | \tau > t) = \frac{\text{Prob}(\tau \leq t + \Delta t, \tau > t)}{\text{Prob}(\tau > t)} = \frac{\exp\left(-\int_0^t h(s)ds\right) - \exp\left(-\int_0^{t+\Delta t} h(s)ds\right)}{\exp\left(-\int_0^t h(s)ds\right)}$.
+
+Simplifying: $\text{Prob}(\tau \leq t + \Delta t | \tau > t) = 1 - \exp\left(-\int_t^{t+\Delta t} h(s)ds\right)$.
+
+In the limit as $\Delta t \to 0$: $\lim_{\Delta t \to 0} \text{Prob}(\tau \leq t + \Delta t | \tau > t) = h(t)\Delta t$.
+
+In other words, $h(t)\Delta t$ is the cond prob of dflt right after time $t$ given survival up to time $t$.
+
+For pricing purposes, we reason under the EMM $Q$. The goal is to define a process $\{\lambda_t\}_{t \geq 0}$ such that: $Q(\tau > t) = \mathbb{E}\left[\exp\left(-\int_0^t \lambda_s ds\right)\right]$.
+
+The process $\lambda_t$, which in all generality can be stoch, is referred to as the \textbf{dflt intensity}. It bears the same interpretation as the hazard rate of an instantaneous dflt prob, but under the EMM.
+
+The value of the defaultable ZC bond (no recov): $D(t,T) = \mathbb{E}_t\left[\exp\left(-\int_t^T (r_s + \lambda_s)ds\right)\right]$. When the bond offers proportional recov $\delta$ upon dflt (recov of mkt value, RMV): $D(t,T) = \mathbb{E}_t\left[\exp\left(-\int_t^T (r_s + (1-\delta)\lambda_s)ds\right)\right]$.
+
+\textcolor{subsubsectioncolor}{\textbf{Parametric Specs:}} negative corr between credit spreads and the level of RF rates is a strong stylized fact. That 
+being said, both the instantaneous RF rate and the dflt intensity should be non-negative 
+processes. The modelling challenge therefore consists in handling a negative corr between 
+two processes that must remain positive.
+
+\textbf{Duffee (1999) Affine Model:} Assumes an affine relation between $\lambda_t$ and $r_t$ (with $dW_t dZ_t = 0$): $dr_t = \kappa_r(\theta_r - r_t)dt + \sigma_r\sqrt{r_t}dW_t, \quad ds_t = \kappa_s(\theta_s - s_t)dt + \sigma_s\sqrt{s_t}dZ_t$ with dflt intensity: $\lambda_t = \alpha + \beta r_t + s_t$
+
+where $\alpha, \beta$ are constants. $\beta < 0$ captures negative corr, though this doesn't guarantee $\lambda_t \geq 0$ always.
+
+\textcolor{subsubsectioncolor}{\textbf{Hybrid Models:}} Instead of using a purely exogenous process to model the default intensity, one can relate the 
+process $\lambda_t$ to factors that have been shown to be empirical determinants(factors) of credit spreads. some factors and their impact on credit spreads are listed below:
+
+\noindent\textbf{Market factors:} $\Delta$ Level of yield curve $(-)$, $\Delta$ Slope of yield curve $(+)$, $\Delta$ Industrial production $(-)$, $\Delta$ VIX $(+)$, $\Delta$ Slope of volatility smirk $(+)$, $\Delta$ HML Fama-French factor $(-)$, $\Delta$ SMB Fama-French factor $(-)$, Return on S\&P 500 index $(-)$.
+
+\noindent\textbf{Default:} $\Delta$ Leverage $(+)$, $\Delta$ Default probability $(+)$.
+
+\noindent\textbf{Liquidity:} $\Delta$ PCA components $(+)$.
+
+\textbf{Madan and Unal (2000) Model:} Example of a hybrid model linking intensity to firm factors: $\lambda_t = a + b\ln V_t + cr_t$
+where $V_t$ is the firm's cash assets level. The model uses a \concept{Vasicek} process for the risk-free rate and a correlated GBM for cash assets.
+
+\textcolor{subsectioncolor}{\textbf{Rating-based Pricing.}}
+\textcolor{subsubsectioncolor}{\textbf{Rating Trans Matrices:}} These matrices contain the historical frequencies of trans from one rating 
+category to another. As expected, the mass of historical frequencies is concentrated on the diagonal (no change in the 
+rating). remaining mass of frequencies is located for the most part on the 
+adjacent categories, indicating a limited dispersion and a tendency for mean reversion. Finally, a 
+significant number of cells is equal to zero. Large shifts in rating (including dflt) are rare events.
+
+Let $p_{ij}$ denote the prob of switching from rating $i$ to rating $j$ within a year. Let $P$ denote the matrix containing all the $p_{ij}$. Under the assumptions of \textbf{time-invariance} (the trans prob from date $t$ to date $T$ depends on $T-t$ only) and \textbf{no memory} (the trans prob from rating $i$ to rating $j$ depends on $i$ and $j$ only without momentum effects), the rating trans matrix can be viewed as a \textbf{\textcolor{conceptcolor}{time-homogenous Markov chain}}.
+
+The $n$-year trans matrix is: $P^{(n)} = P^n$
+; Two-period trans probs: $p_{ij}^{(2)} = \sum_{k=1}^K p_{ik} \times p_{kj}$ with two-year trans matrix $P^{(2)} = P \times P$.
+
+\textbf{Limitations of using historical rating trans matrices:} [\textcolor{rulecolor}{\textbf{1. Time-homogeneity issue}}—empirical trans to compute dflt probs generates spreads too low for short maturities and too high for long maturities, indicating trans are not time-homogenous; \textcolor{rulecolor}{\textbf{2. Probability measure mismatch}}—empirical trans are physical probs while bond pricing requires EMM probs]
+
+\textcolor{subsubsectioncolor}{\textbf{Bond Pricing:}} \textbf{Objective:} Adjust historical trans matrix $P$ into time-nonhomogeneous matrix $Q$ containing EMM probs $q_{ij}$.
+
+\textbf{RTV Recov Assumption:} Defaultable ZC bond in rating category $i$: $D_i(t,T) = P(t,T)(\delta + (1-\delta)Q_i(\tau > T | \tau > t))$
+
+\textbf{Back out implied EMM dflt prob:} From observed bond prices: $q_i^{imp}(\tau < T) = \frac{P(0,T) - D_i(0,T)}{(1-\delta)P(0,T)}$
+
+\textbf{Rating-specific risk premia:} Let $U$ be the diagonal matrix of risk premia $\mu_i$ with dflt column $K$: $q_{ij} = \begin{cases} p_{ij}\mu_i & \text{for } j \neq K \\ 1 - \mu_i(1-p_{iK}) & \text{for } j = K \end{cases}$
+
+For first maturity: $\mu_i(1) = \frac{D_i(0,1) - \delta P(0,1)}{(1-\delta)P(0,1)(1-p_{iK})}$.
+
+\textcolor{subsectioncolor}{\textbf{Modeling the Recov Rate:}} Recov rates show substantial variations across debt types, industries, and business conditions, with negative relations to dflt rates and high yield bond supply, and positive relations to GDP growth and S\&P 500 returns. This exhibits \textbf{procyclicality of recov rates}.
+
+\textcolor{subsubsectioncolor}{\textbf{The Joint Identification Problem:}} The \textbf{dflt prob and the recov rate can be separately estimated if we observe the prices of two defaultable instruments issued by the same company}. From the \textit{pari passu} clause, dflt affects both instruments simultaneously, but their payoffs upon dflt differ.
+
+Unal, Madan and Güntay (2003) extract recov rates from a sample of firms with senior and junior debts. Assuming RTV recov rates indep of dflt timing: $\frac{D_s(0,T) - D_j(0,T)}{P(0,T) - D_j(0,T)} = \frac{\mathbb{E}(\delta_s) - \mathbb{E}(\delta_j)}{1 - \mathbb{E}(\delta_j)}$
+
+Das and Hanouna (2009) develop a method to extract dflt probs and recov rates from the joint observation of equity and CDS prices, using a binomial tree where equity prices drive dflt intensity (negatively corr), and recov rates follow a logistic function of intensity. Under absolute priority, shareholders get nothing at dflt while CDS recov is logistic in intensity.
+
+\textbf{Recov term structure and dyn:} The term structure is downward sloping. Firms experiencing sudden dflt obtain greater resale value for assets, while firms whose financial health deteriorates gradually see assets lose resale value. Recov rates are increasing with credit rating quality (CCC near dflt shows substantially lower recov). Significant variations in recov exist among industries.
+\textcolor{subsubsectioncolor}{\textbf{The \model{Beta Distrib:}}} Once recov rates are empirically extracted, their distrib can be smoothed with a prob law. The \model{beta distrib} is ideal because it is defi on $[0,1]$ and is parsimonious (two-param), producing diverse distrib shapes.
+
+For $x \in [0,1]$, the beta density is: $f(x;a,b) = \frac{x^{a-1}(1-x)^{b-1}}{B(a,b)}$ where $a, b > 0$ and $B(a,b) = \frac{\Gamma(a)\Gamma(b)}{\Gamma(a+b)}$ is the scaling constant. Depending on $a$ and $b$, the beta distrib can be increasing, decreasing, bell-shaped, U-shaped, right-skewed, or left-skewed.
+
+The mean is $a/(a+b)$ and variance is $ab/[(a+b)^2(a+b+1)]$. To match empirical mean $\mu$ and std dev $\sigma$ of recov rates: $a = \frac{\mu^2 - \mu^3 - \mu\sigma^2}{\sigma^2}, \quad b = \frac{\mu - 2\mu^2 + \mu^3 - \sigma^2 + \mu\sigma^2}{\sigma^2}$
+When $a$ and $b$ are small integers,simulation: generate $a+b-1$ uniform draws from $[0,1]$ and select the $a$-th lowest. For non small-integer params, use gamma distrib draws.
+Renault and Scaillet (2004) improve fitting with a beta kernel estimator. Given a sample of $n$ recov rates $\delta_1, \ldots, \delta_n$, the beta kernel estimator is: $\hat{f}(x) = \frac{1}{n}\sum_{j=1}^n f\left(\delta_j; 1 + \frac{x}{w}, 1 + \frac{1-x}{w}\right)$
+where $w$ is the bandwidth smoothing param. Renault and Scaillet (2004) set $w = \sigma(n)^{-2/5}$ with $\sigma$ the empirical std dev.
+
+Beta distrib acceptable; kernel estimator reveals empirical bimodality vs. market-implied rates (bonds/CDS) showing unimodality.
+
+\end{multicols}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
