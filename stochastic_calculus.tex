@@ -901,6 +901,11 @@ Let $W$ be a Brownian motion and let $f : \mathbb{R} \times [0, \infty) \to \mat
 \[
 f(W_t, t) - f(W_0, 0) = \int_0^t \left(\frac{\partial f}{\partial t}(W_s, s) + \frac{1}{2} \frac{\partial^2 f}{\partial w^2}(W_s, s)\right) ds + \int_0^t \frac{\partial f}{\partial w}(W_s, s) dW_s.
 \]
+
+\textbf{In differential form:}
+\[
+df(W_t, t) = \left(\frac{\partial f}{\partial t}(W_t, t) + \frac{1}{2} \frac{\partial^2 f}{\partial w^2}(W_t, t)\right) dt + \frac{\partial f}{\partial w}(W_t, t) dW_t.
+\]
 \vspace{1em}
 
 Definition: \textbf{Itô process}
@@ -942,8 +947,6 @@ Let $0 = t_0^{(n)} \leq t_1^{(n)} \leq \ldots \leq t_n^{(n)} = T$ be a partition
 \]
 \vspace{1em}
 
-Definition: 
-
 In the particular case where the stochastic process is an Itô process,
 \[
 X_t \equiv X_0 + \int_0^t K_s ds + \int_0^t H_s dW_s
@@ -953,6 +956,207 @@ its \textbf{quadratic variation} is
 \[
 \langle X \rangle_t = \int_0^t H_s^2 ds.
 \]
+\vspace{1em}
+
+Theorem: \textbf{Itô's lemma for Itô processes}
+\vspace{0.5em}
+
+Let $X$ be an Itô process and let $f : \mathbb{R} \to \mathbb{R}$ be a function, the first two derivatives of which exist and are continuous. Then $\forall 0 \leq t \leq T$,
+\[
+f(X_t) - f(X_0) \stackrel{\mathbb{P}}{=a.s.} \int_0^t \frac{df}{dX}(X_s) dX_s + \frac{1}{2} \int_0^t \frac{d^2f}{dX^2}(X_s) d\langle X \rangle_s \tag{10}
+\]
+
+\[
+\stackrel{\mathbb{P}}{=a.s.} \int_0^t \frac{df}{dX}(X_s) H_s dW_s + \int_0^t \left(\frac{df}{dX}(X_s) K_s + \frac{1}{2} \frac{d^2f}{dX^2}(X_s) H_s^2 \right) ds,
+\]
+
+\textbf{In differential form:}
+\[
+df(X_t) = \frac{df}{dX}(X_t) dX_t + \frac{1}{2} \frac{d^2f}{dX^2}(X_t) d\langle X \rangle_t
+= \left( \frac{df}{dX}(X_t) K_t + \frac{1}{2} \frac{d^2f}{dX^2}(X_t) H_t^2 \right) dt + \frac{df}{dX}(X_t) H_t dW_t
+\]
+
+\vspace{1em}
+
+Theorem: \textbf{Fubini's theorem}
+\vspace{0.5em}
+
+If for all $0 \leq t \leq T$, $Y_t \geq 0$ then
+\[
+\mathbb{E}^{\mathbb{P}} \left[ \int_0^t Y_s ds \right] = \int_0^t \mathbb{E}^{\mathbb{P}} [Y_s] ds.
+\]
+
+\vspace{1em}
+
+Definition: \textbf{Quadratic covariation}
+\vspace{0.5em}
+
+Let $X$ and $Y$ be two Itô processes such that
+\[
+dX_t = K_t dt + H_t dW_t \quad \text{and} \quad dY_t = \tilde{K}_t dt + \tilde{H}_t dW_t
+\]
+
+then the \textbf{quadratic covariation} process $\langle X, Y \rangle_t$ is defined for all $t \in [0, T]$ as
+\[
+\langle X, Y \rangle_t = \int_0^t H_s \tilde{H}_s ds.
+\]
+
+\vspace{1em}
+
+Theorem: \textbf{The multiplication rule}
+\vspace{0.5em}
+
+Let $X$ and $Y$ be two Itô processes such that $dX_t = K_t dt + H_t dW_t$ and $dY_t = \tilde{K}_t dt + \tilde{H}_t dW_t$. The multiplication rule is
+\[
+dX_t Y_t = X_t dY_t + Y_t dX_t + d\langle X, Y \rangle_t
+\]
+
+\[
+= X_t \left(\tilde{K}_t dt + \tilde{H}_t dW_t\right) + Y_t (K_t dt + H_t dW_t) + H_t \tilde{H}_t dt
+\]
+
+\[
+= \left(X_t \tilde{K}_t + Y_t K_t + H_t \tilde{H}_t \right) dt + \left(X_t \tilde{H}_t + Y_t H_t \right) dW_t.
+\]
+
+\vspace{1em}
+
+Definition: \textbf{Itô process (multidimensional)}
+\vspace{0.5em}
+
+Let $W^{(1)}, \ldots, W^{(n)}$ be independent Brownian motions. For $i, j \in \{1, \ldots, m\}$ and $k, k^* \in \{1, \ldots, n\}$, the adapted processes $K^{(i)}$ and $H^{(i,k)}$ satisfy
+\[
+\mathbb{P} \left[\sum_{i=1}^{m} \int_0^T |K_s^{(i)}| ds < \infty\right] = 1 \quad \text{and} \quad \mathbb{P} \left[\int_0^T H_s^{(i,k)} H_s^{(j,k^*)} ds < \infty\right] = 1.
+\]
+
+For all $i \in \{1, 2, \ldots, m\}$, we define the process $X^{(i)}$ as
+\[
+X_t^{(i)} = X_0^{(i)} + \int_0^t K_s^{(i)} ds + \sum_{k=1}^{n} \int_0^t H_s^{(i,k)} dW_s^{(k)} \tag{12}
+\]
+
+where $X_0^{(1)}, \ldots, X_0^{(m)}$ are $\mathcal{F}_0$--measurable random variables.
+
+\textbf{In differential form:}
+\[
+dX_t^{(i)} = K_t^{(i)} dt + \sum_{k=1}^{n} H_t^{(i,k)} dW_t^{(k)}
+\]
+
+\vspace{1em}
+
+Definition: \textbf{Quadratic covariation (multidimensional)}
+\vspace{0.5em}
+
+For two Itô processes $X^{(i)}$ and $X^{(j)}$, the \textbf{quadratic covariation} is defined for all $t \in [0, T]$ as
+\[
+\langle X^{(i)}, X^{(j)} \rangle_t = \sum_{k=1}^{n} \int_0^t H_s^{(i,k)} H_s^{(j,k)} ds.
+\]
+
+\textbf{Note that it is symmetric,}
+\[
+\langle X^{(i)}, X^{(j)} \rangle = \langle X^{(j)}, X^{(i)} \rangle,
+\]
+
+and the quadratic variation is a particular case
+\[
+\langle X^{(i)}, X^{(i)} \rangle = \langle X^{(i)} \rangle.
+\]
+
+\vspace{1em}
+
+Theorem: \textbf{Itô's lemma, multivariate version}
+\vspace{0.5em}
+
+Let $f : \mathbb{R}^m \times [0, \infty) \to \mathbb{R}$ be a continuous function such that the partial derivatives $\frac{\partial f}{\partial x_i}$, $\frac{\partial f}{\partial s}$, $\frac{\partial^2 f}{\partial x_i \partial x_j}$, and $\frac{\partial^2 f}{\partial x_i \partial s}$ for $i,j \in \{1, \ldots, m\}$ exist and are continuous. Then $\forall t \geq 0$,
+\[
+f(X_t^{(1)}, \ldots, X_t^{(m)}, t) - f(X_0^{(1)}, \ldots, X_0^{(m)}, 0)
+\]
+
+\[
+\stackrel{\mathbb{P}}{=a.s.} \sum_{i=1}^{m} \int_0^t \frac{\partial f}{\partial x_i}(X_s^{(1)}, \ldots, X_s^{(m)}, s) dX_s^{(i)} + \int_0^t \frac{\partial f}{\partial t}(X_s^{(1)}, \ldots, X_s^{(m)}, s) ds
+\]
+
+\[
++ \frac{1}{2} \sum_{i=1}^{m} \sum_{j=1}^{m} \int_0^t \frac{\partial^2 f}{\partial x_i \partial x_j}(X_s^{(1)}, \ldots, X_s^{(m)}, s) d\langle X^{(i)}, X^{(j)} \rangle_s.
+\]
+
+\textbf{In differential form:}
+\[
+df(X_t^{(1)}, \ldots, X_t^{(m)}, t) = \sum_{i=1}^{m} \frac{\partial f}{\partial x_i}(X_t^{(1)}, \ldots, X_t^{(m)}, t) dX_t^{(i)} + \frac{\partial f}{\partial t}(X_t^{(1)}, \ldots, X_t^{(m)}, t) dt
+\]
+
+\[
++ \frac{1}{2} \sum_{i=1}^{m} \sum_{j=1}^{m} \frac{\partial^2 f}{\partial x_i \partial x_j}(X_t^{(1)}, \ldots, X_t^{(m)}, t) d\langle X^{(i)}, X^{(j)} \rangle_t.
+\]
+
+\vspace{1em}
+
+Definition: \textbf{Strong solution}
+\vspace{0.5em}
+
+A \textbf{strong solution} consists of finding a stochastic process $X$ existing on the same filtered probability space $(\Omega, \mathcal{F}, \{\mathcal{F}_t : t \geq 0\}, \mathbb{P})$ as the Brownian motion and satisfying the equation
+\[
+X_t = X_0 + \int_0^t \mu(X_s) ds + \int_0^t \sigma(X_s) dW_s.
+\]
+
+\textbf{Uniqueness:} The strong solution is said to be \textbf{unique} if, when $X$ and $\tilde{X}$ represent two strong solutions to the same stochastic differential equation, we have
+\[
+\mathbb{P}[X_t = \tilde{X}_t, \, t \geq 0] = 1.
+\]
+
+\vspace{1em}
+
+Definition: \textbf{Weak solution}
+\vspace{0.5em}
+
+We have a \textbf{weak solution} if we can construct a probability space $(\tilde{\Omega}, \tilde{\mathcal{F}}, \tilde{\mathbb{P}})$, a $(\Omega, \mathcal{F}, \mathbb{P})$ – standard Brownian motion $W$, and a $(\tilde{\Omega}, \tilde{\mathcal{F}}, \tilde{\mathbb{P}})$ – stochastic process $\tilde{X}$ such that
+\[
+\tilde{X}_t = \tilde{X}_0 + \int_0^t \mu(\tilde{X}_s) ds + \int_0^t \sigma(\tilde{X}_s) d\tilde{W}_s.
+\]
+
+\textbf{Relationship with strong solutions:} It is possible to have several strong solutions to the same equation. If the strong solution is unique, then there will also be a unique weak solution. By contrast, if the weak solution is unique, there may be several strong solutions.
+
+\vspace{1em}
+
+Definition: \textbf{Gaussian models}
+\vspace{0.5em}
+
+Some stochastic processes that give rise to \textbf{Gaussian models} are of the form
+\[
+dX_t = (\mu_1(t) X_t + \mu_2(t)) dt + \sigma(t) dW_t \tag{13}
+\]
+
+where $\mu_1(\cdot)$, $\mu_2(\cdot)$ and $\sigma(\cdot)$ are deterministic functions of time and $\{W_t\}_{0 \leq t \leq T}$ is a $\mathbb{P}$--standard Brownian motion.
+
+\vspace{1em}
+
+Theorem: \textbf{Strong solution to Gaussian models}
+\vspace{0.5em}
+
+If $\mathbb{P} \left[\int_0^T \frac{\sigma^2(s)}{\Phi^2(s)} ds < \infty\right] = 1$, then the strong solution to the stochastic differential equation (13) is
+\[
+X_t = \Phi(t) \left[X_0 + \int_0^t \frac{\mu_2(s)}{\Phi(s)} ds + \int_0^t \frac{\sigma(s)}{\Phi(s)} dW_s\right]
+\]
+
+where the function $\Phi(\cdot)$ is the solution to the ordinary differential equation
+\[
+d\Phi(t) = \mu_1(t) \Phi(t) dt, \quad \Phi(0) = 1.
+\]
+
+\textit{Source: Bisière (1997), page 117.}
+
+\vspace{1em}
+
+Theorem: \textbf{Lipschitz condition for existence of strong solutions}
+\vspace{0.5em}
+
+If for all $i, j, x$, and $y$, we have $|\sigma_{i,j}(x) - \sigma_{i,j}(y)| \leq K|x - y|$ and $|b_i(x) - b_i(y)| \leq K|x - y|$, then the integral equation
+\[
+X_t = x + \int_0^t b(X_s) ds + \int_0^t \sigma(X_s) dW_s
+\]
+
+has a strong solution.
+
+
 \vspace{1em}
 
 \end{document}
