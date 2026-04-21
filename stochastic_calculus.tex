@@ -1159,4 +1159,120 @@ has a strong solution.
 
 \vspace{1em}
 
+
+\section{Girsanov's theorem}
+
+Definition: \textbf{Equivalent probability measures}
+\vspace{0.5em}
+
+Two probability measures $\mathbb{P}$ and $\mathbb{Q}$ constructed on the same measurable space $(\Omega, \mathcal{F})$ are said to be \textbf{equivalent} if they have the same set of impossible events, i.e.
+
+\[
+\mathbb{P}(A) = 0 \Leftrightarrow \mathbb{Q}(A) = 0, \quad A \in \mathcal{F}.
+\]
+
+\vspace{1em}
+
+Theorem: \textbf{Radon-Nikodym theorem}
+\vspace{0.5em}
+
+Given two equivalent probability measures $\mathbb{P}$ and $\mathbb{Q}$ constructed on the measurable space $(\Omega, \mathcal{F})$, there exists a positive-valued random variable $Y$ such that
+\[
+\mathbb{Q}(A) = \mathbb{E}^{\mathbb{P}}[Y\mathbb{I}_A].
+\]
+
+Such a random variable $Y$ is often denoted by $\frac{d\mathbb{Q}}{d\mathbb{P}}$.
+
+\vspace{1em}
+
+
+Theorem: \textbf{Cameron-Martin-Girsanov}
+\vspace{0.5em}
+
+Let $\gamma = \{\gamma_t : t \in [0, T]\}$ be a $\{\mathcal{F}_t\}$--predictable process such that $\mathbb{E}^{\mathbb{P}}\left[\exp\left(\frac{1}{2}\int_0^T \gamma_t^2 dt\right)\right] < \infty$. There exists a measure $\mathbb{Q}$ on $(\Omega, \mathcal{F})$ such that:
+
+\begin{itemize}
+	\item (G1) $\mathbb{Q}$ is equivalent to $\mathbb{P}$,
+	\item (G2) $\displaystyle \frac{d\mathbb{Q}}{d\mathbb{P}} = \exp\left[-\int_0^T \gamma_t dW_t^{\mathbb{P}} - \frac{1}{2}\int_0^T \gamma_t^2 dt\right]$,
+	\item (G3) The process $\{W_t^{\mathbb{Q}}\}_{0 \leq t \leq T}$ defined as $W_t^{\mathbb{Q}} = W_t^{\mathbb{P}} + \int_0^t \gamma_s ds$ is a $(\{\mathcal{F}_t\}, \mathbb{Q})$--Brownian motion.
+\end{itemize}
+
+\vspace{0.5em}
+
+\textit{Condition:} The condition $\mathbb{E}^{\mathbb{P}}\left[\exp\left(\frac{1}{2}\int_0^T \gamma_t^2 dt\right)\right] < \infty$ is sufficient but not necessary. It is known as the \textbf{Novikov condition}.
+
+\vspace{1em}
+
+
+Theorem: \textbf{Theorem (Cameron-Martin-Girsanov theorem) - Multivariate case}
+\vspace{0.5em}
+
+Let $W = (W^{\mathbb{P}, 1}, \ldots, W^{\mathbb{P}, n})$ be $n$ independent $(\{\mathcal{F}_t\}, \mathbb{P})$-standard Brownian motions. For all $i \in \{1, 2, \ldots, n\}$, assume that $\gamma^{(i)}$ is a $\{\mathcal{F}_t\}$--predictable process such that
+
+\[
+\mathbb{E}^{\mathbb{P}}\left[\exp\left(\frac{1}{2}\int_0^T \left(\gamma_t^{(i)}\right)^2 dt\right)\right] < \infty.
+\]
+
+There exists a measure $\mathbb{Q}$ on $(\Omega, \mathcal{F})$ such that:
+
+\begin{itemize}
+	\item (G1) $\mathbb{Q}$ is equivalent to $\mathbb{P}$,
+	\item (G2) $\displaystyle \frac{d\mathbb{Q}}{d\mathbb{P}} = \exp\left[-\sum_{i=1}^n \int_0^T \gamma_t^{(i)} dW_t^{\mathbb{P}, i} - \frac{1}{2}\int_0^T \sum_{i=1}^n \left(\gamma_t^{(i)}\right)^2 dt\right]$,
+	\item (G3) For all $i \in \{1, \ldots, n\}$, the process $W_t^{\mathbb{Q}, i}$ defined as 
+	\[
+	W_t^{\mathbb{Q}, i} = W_t^{\mathbb{P}, i} + \int_0^t \gamma_s^{(i)} ds
+	\]
+	is a $(\{\mathcal{F}_t\}, \mathbb{Q})$--Brownian motion.
+\end{itemize}
+
+\vspace{1em}
+
+
+\section{Hedging attainable contingent claims}
+
+Definition: \textbf{Trading strategy}
+\vspace{0.5em}
+
+A trading strategy is a predictable portfolio process
+\[
+\{(\phi_t, \psi_t) : 0 \leq t \leq T\}
+\]
+where
+\begin{itemize}
+	\item $\phi_t$ = the number of riskless asset shares held at time $t$
+	\item $\psi_t$ = the number of risky asset shares held at time $t$
+\end{itemize}
+\vspace{1em}
+
+The value of such a trading strategy at time $t$ is
+\[
+V_t = \phi_t B_t + \psi_t S_t.
+\]
+\[
+dV_t = \phi_t dB_t + B_t d\phi_t + d\langle\phi, B\rangle_t + \psi_t dS_t + S_t d\psi_t + d\langle\psi, S\rangle_t.
+\]
+\vspace{1em}
+
+Definition: \textbf{Self-financing strategy}
+\vspace{0.5em}
+
+A trading strategy is said to be self-financing if
+\[
+dV_t = \phi_t dB_t + \psi_t dS_t,
+\]
+i.e. the variations in the strategy value are only caused by the asset price variations and do not depend on the portfolio weight fluctuations. A strategy is therefore self-financing if
+\[
+B_t d\phi_t + S_t d\psi_t + d \langle\phi, B\rangle_t + d \langle\psi, S\rangle_t = 0.
+\]
+\vspace{1em}
+
+Definition: \textbf{Attainable contingent claim}
+\vspace{0.5em}
+
+Let $X$ be a contingent claim. $X$ is therefore a non-negative-valued, $\mathcal{F}_T$--measurable, random variable. The contingent claim $X$ is attainable if there exists a self-financing trading strategy $\{(\phi_t, \psi_t) : 0 \leq t \leq T\}$ such that
+\[
+V_T = \phi_T B_T + \psi_T S_T = X.
+\]
+\vspace{1em}
+
 \end{document}
